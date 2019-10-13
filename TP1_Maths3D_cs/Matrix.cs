@@ -190,14 +190,28 @@ namespace TP1_Maths3D_cs
 
         public static Matrix operator *(Vect vec, Matrix mat)
         {
-            // matrix * vec column
-            return mat * (new Matrix(vec)).transposer();
+            if (vec.getDim() != mat.nb_col)
+                throw new System.ArgumentException("matrix don't have the right dimension: mat colmns must equals vec dim");
+
+            Matrix res_mat = new Matrix(1,vec.getDim());
+            for (int i = 0; i < vec.getDim(); i++)
+            {
+                res_mat[0,i] = vec * mat.getCol(i);
+            }
+            return res_mat;
         }
 
         public static Matrix operator *(Matrix mat, Vect vec)
         {
-            // vec_ligne * matrix
-            return (new Matrix(vec)).transposer() * mat;
+            if (vec.getDim() != mat.nb_col)
+                throw new System.ArgumentException("matrix don't have the right dimension: mat colmns must equals vec dim");
+
+            Matrix res_mat = new Matrix(1, vec.getDim());
+            for (int i = 0; i < vec.getDim(); i++)
+            {
+                res_mat[0, i] = mat.getRow(i) * vec;
+            }
+            return res_mat;
         }
 
         // Definition of rotation matrix
