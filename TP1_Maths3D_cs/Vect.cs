@@ -60,7 +60,7 @@ namespace TP1_Maths3D_cs
         {
             double[] squares = new double[dim];
             for (int i = 0; i < dim; i++)
-                squares[i] = elems[i];
+                squares[i] = elems[i] * elems[i];
             return Math.Sqrt(squares.Sum());
         }
 
@@ -193,6 +193,22 @@ namespace TP1_Maths3D_cs
             for (int i = 0; i < vec1.dim; i++)
                 res_elems[i] = (vec1.elems[i] / n);
             return new Vect(res_elems);
+        }
+
+        // Normaliser un vecteur
+        public Vect normalize()
+        {
+            return this / this.magnitude();
+        }
+
+        // Vecteurs utiles
+        public static Vect zeros(int dim)
+        {
+            double[] array = new double[dim];
+            for (int i = 0; i < dim; i++)
+                array[i] = 0;
+
+            return new Vect(array);
         }
 
     }
