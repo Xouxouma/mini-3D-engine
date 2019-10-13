@@ -51,9 +51,10 @@ namespace TP1_Maths3D_cs
 
             // Matrix
 
-            Matrix mat34 = new Matrix(vec3, vec3b, vec3, vec3b);
+            Matrix mat43 = new Matrix(vec3, vec3b, vec3, vec3b);
             Matrix mat33 = new Matrix(vec3*2, 0.5*vec3b, vec3b-vec3);
             Matrix mat44 = new Matrix(vec4, 2-vec4+3, vec4+vec4/4, -3*vec4*2);
+            Matrix mat34 = new Matrix(vec4, 2-vec4+3, vec4+vec4/4);
 
             Console.WriteLine("mat33 = " + mat33);
             Console.WriteLine("mat34 = " + mat34);
@@ -64,6 +65,7 @@ namespace TP1_Maths3D_cs
             Console.WriteLine("mat34 + mat34 = " + (mat34 + mat34));
             Console.WriteLine("mat34 - mat34 = " + (mat34 + mat34));
             Console.WriteLine("mat33 * mat33 = " + (mat33 * mat33));
+            Console.WriteLine("mat34 * mat43 = " + (mat34 * mat43));
 
             // Program closes auto close without that
             while (true)
