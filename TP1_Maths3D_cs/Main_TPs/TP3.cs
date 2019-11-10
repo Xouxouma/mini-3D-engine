@@ -34,6 +34,11 @@ namespace Moteur3D
             Console.WriteLine("di = " + di);
             Console.WriteLine("dr = " + dr);
 
+
+            VectCartesien v = new VectCartesien(1, 2);
+            VectCartesien vtest = p1 + v;
+            Point2D p = new Point2D(p1 + p2);
+            Point2D ptest = new Point2D(p1 + v);
         }
 
       

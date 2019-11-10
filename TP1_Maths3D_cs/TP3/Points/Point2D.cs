@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 namespace Moteur3D
 {
     class Point2D : VectCartesien
+    /*
+    * Classe inutilisée pour le moment car c'est plus simple de faire les opérations qu'entre VectCartesien
+    */
     {
         double x;
         double y;

@@ -8,11 +8,13 @@ namespace Moteur3D
 {
     class RayonParam
     {
-        private Point2D p0;
-        private VectCartesien d;
+        private VectCartesien p0; // point 2d
+        private VectCartesien d; // vect 2d
 
-        public RayonParam(Point2D p0, VectCartesien d)
+        public RayonParam(VectCartesien p0, VectCartesien d)
         {
+            if (p0.getDim() != 2)
+                throw new System.ArgumentException("VectCartesien p0 must be of size 2.");
             if (d.getDim() != 2)
                 throw new System.ArgumentException("VectCartesien d must be of size 2.");
             this.p0 = p0;
@@ -20,7 +22,7 @@ namespace Moteur3D
         }
         public RayonParam(double p0_x, double p0_y, double dir, double dist)
         {
-            this.p0 = new Point2D(p0_x, p0_y);
+            this.p0 = new VectCartesien(p0_x, p0_y);
             this.d = new VectCartesien(dir, dist);
         }
         public override String ToString()
@@ -31,7 +33,7 @@ namespace Moteur3D
         // Conversions
         public RayonDirect ToRayonDirect()
         {
-            Point2D p_end = new Point2D(p0.GetX() + d[0], p0.GetY() + d[1]);
+            VectCartesien p_end = p0 + d;
             return new RayonDirect(p0, p_end);
         }
     }
