@@ -47,7 +47,8 @@
     <Compile Include="TP2\AngleEuler.cs" />
     <Compile Include="TP3\Droites\DroiteImplicite.cs" />
     <Compile Include="TP3\Droites\DroiteMediatrice.cs" />
-    <Compile Include="TP3\Droites\DroiteNorm.cs" />
+    <Compile Include="TP3\Droites\DroiteNormaleDistance.cs" />
+    <Compile Include="TP3\Droites\DroiteNormalePoint.cs" />
     <Compile Include="TP3\Droites\DroiteReduite.cs" />
     <Compile Include="TP3\Points\Point2D.cs" />
     <Compile Include="TP3\Points\Point3D.cs" />

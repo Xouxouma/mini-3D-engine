@@ -36,5 +36,13 @@ namespace Moteur3D
             VectCartesien p_end = p0 + d;
             return new RayonDirect(p0, p_end);
         }
+
+        public DroiteImplicite ToDroiteImplicite()
+        {
+            double a = d[1];
+            double b = -d[0];
+            double c = p0[0] * d[1] - p0[1] * d[0];
+            return new DroiteImplicite(a, b, c);
+        }
     }
 }

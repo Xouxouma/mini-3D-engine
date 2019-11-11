@@ -22,5 +22,19 @@ namespace Moteur3D
         {
             return "Droite : " + a + "x + " + b + "y + " + c + " = 0";
         }
+
+        // Conversions
+        public DroiteReduite ToDroiteReduite()
+        {
+            double m = -a / b;
+            double y0 = c / b;
+            return new DroiteReduite(y0, m);
+        }
+        public DroiteNormaleDistance ToDroiteNormaleDistance()
+        {
+            VectCartesien n = new VectCartesien(a, b);
+            double distance = c / n.magnitude();
+            return new DroiteNormaleDistance(n, distance);
+        }
     }
 }

@@ -37,5 +37,9 @@ namespace Moteur3D
         {
             return new RayonParam(p_org, p_end - p_org);
         }
+        public DroiteImplicite ToDroiteImplicite()
+        {
+            return ToRayonParam().ToDroiteImplicite();
+        }
     }
 }
