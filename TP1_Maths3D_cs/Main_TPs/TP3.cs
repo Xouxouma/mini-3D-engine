@@ -44,8 +44,11 @@ namespace Moteur3D
             Console.WriteLine("dnp = " + dnp + " ; ToDND : " + dnp.ToDroiteNormaleDistance() + "; ToDNP : " + dnp.ToDroiteNormaleDistance().ToDroiteNormalePoint());
            // Console.WriteLine("dm = " + dm + " ; ToImplicite : " + dm.ToDroiteImplicite() + " ; ToMediatrice : " + dm.ToDroiteImplicite().ToDroiteMediatrice() + " ; ToImplicite2 : " + dm.ToDroiteImplicite().ToDroiteMediatrice().ToDroiteImplicite());
             Console.WriteLine("\n\ndm = " + dm + " ; ToImplicite : " + dm.ToDroiteImplicite());
-            
 
+            // Cercles
+            Console.WriteLine(new CercleDirect(p1, p2));
+            Console.WriteLine(new CercleParam(p1,  4.5));
+            Console.WriteLine(new CercleImplicite(10,2,4));
 
 
         }

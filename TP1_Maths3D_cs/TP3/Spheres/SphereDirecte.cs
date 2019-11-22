@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Moteur3D
 {
-    class CercleDirect
+    class SphereDirecte
     {
         private VectCartesien centre;
         private VectCartesien point;
 
-        public CercleDirect(VectCartesien centre, VectCartesien point)
+        public SphereDirecte(VectCartesien centre, VectCartesien point)
         {
-            if (centre.getDim() != 2)
+            if (centre.getDim() != 3)
                 throw new System.ArgumentException("VectCartesien centre must be of size 2.");
-            if (point.getDim() != 2)
+            if (point.getDim() != 3)
                 throw new System.ArgumentException("VectCartesien point must be of size 2.");
             this.centre = centre;
             this.point = point;

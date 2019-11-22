@@ -45,7 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TP2\AngleEuler.cs" />
+    <Compile Include="TP3\AABBs\AABB.cs" />
     <Compile Include="TP3\Cercles\CercleDirect.cs" />
+    <Compile Include="TP3\Cercles\CercleImplicite.cs" />
+    <Compile Include="TP3\Cercles\CercleParam.cs" />
     <Compile Include="TP3\Droites\DroiteImplicite.cs" />
     <Compile Include="TP3\Droites\DroiteMediatrice.cs" />
     <Compile Include="TP3\Droites\DroiteNormaleDistance.cs" />
@@ -64,6 +67,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TP2\VectPolaire.cs" />
     <Compile Include="TP3\Rayons\RayonParam.cs" />
+    <Compile Include="TP3\Spheres\SphereDirecte.cs" />
+    <Compile Include="TP3\Spheres\SphereImplicite.cs" />
+    <Compile Include="TP3\Spheres\SphereParam.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
