@@ -36,5 +36,34 @@ namespace Moteur3D
             double distance = c / n.magnitude();
             return new DroiteNormaleDistance(n, distance);
         }
+
+        // semble fausse , et inutile
+       /* public DroiteMediatrice ToDroiteMediatrice()
+        {
+            double qx = 1;
+            double rx = b + qx;
+            double ry = c - a * b - a * qx;
+            double qy = a + ry;
+            VectCartesien q = new VectCartesien(qx, qy);
+            VectCartesien r = new VectCartesien(rx, ry);
+            return new DroiteMediatrice(r, q);
+        }*/
+
+        // Evaluation
+        public double evaluate_y(double x)
+        {
+            return (-a * x - c) / b;
+        }
+        public double evaluate_x(double y)
+        {
+            return (-b * y - c) / a;
+        }
+
+        public RayonDirect GetRayonDirect(double x0, double x1)
+        {
+            VectCartesien p0 = new VectCartesien(x0, evaluate_y(x0));
+            VectCartesien p1 = new VectCartesien(x1, evaluate_y(x1));
+            return new RayonDirect(p0, p1);
+        }
     }
 }

@@ -11,8 +11,12 @@ namespace Moteur3D
         private VectCartesien p0;
         private VectCartesien p1;
 
-        public DroiteMediatrice(Point2D p0, Point2D p1)
+        public DroiteMediatrice(VectCartesien p0, VectCartesien p1)
         {
+            if (p0.getDim() != 2)
+                throw new System.ArgumentException("VectCartesien p0 must be of size 2.");
+            if (p1.getDim() != 2)
+                throw new System.ArgumentException("VectCartesien p1 must be of size 2.");
             this.p0 = p0;
             this.p1 = p1;
         }
@@ -29,9 +33,13 @@ namespace Moteur3D
         // Conversions
         public DroiteImplicite ToDroiteImplicite()
         {
-            double a = p0[1] - p1[1];
-            double b = p1[0] - p0[0];
-            double c = p1[0] * p0[1] - p1[1] * p0[0];
+            // Formule du cours, mauvais résultats ?
+            double a = p0[1] - p1[0];
+            double b = p1[0] - p0[1];
+            double c = p1[0] * p0[1] - p0[0] * p1[1];
+            /*double a = p1[0] - p0[0];
+            double b = p0[0] - p1[0];
+            double c = p0[0] * p0[0] + p0[1] * p0[1] - p1[0] * p1[0] - p1[1] * p1[1];*/
             return new DroiteImplicite(a, b, c);
         }
     }

@@ -31,7 +31,14 @@ namespace Moteur3D
         {
             return "Rayon : " + p_org + " -> " + p_end;
         }
-
+        public VectCartesien GetP0()
+        {
+            return p_org;
+        }
+        public VectCartesien GetP1()
+        {
+            return p_end;
+        }
         // Conversions
         public RayonParam ToRayonParam()
         {
@@ -41,5 +48,13 @@ namespace Moteur3D
         {
             return ToRayonParam().ToDroiteImplicite();
         }
+        // Operations
+        public RayonDirect Rotate()
+        {
+            VectCartesien p0 = new VectCartesien(p_end[1], p_org[0]);
+            VectCartesien p1 = new VectCartesien(p_end[0], p_org[1]);
+            return new RayonDirect(p0, p1);
+        }
+
     }
 }

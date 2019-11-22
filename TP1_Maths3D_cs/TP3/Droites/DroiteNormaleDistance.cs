@@ -35,8 +35,18 @@ namespace Moteur3D
         // Conversions
         public DroiteNormalePoint ToDroiteNormalePoint()
         {
-            VectCartesien q = dist / n;
+            double qx = 1;
+            double qy = (dist - qx * n[0]) / n[1];
+            VectCartesien q = new VectCartesien(qx, qy);
             return new DroiteNormalePoint(n, q);
+        }
+
+        public DroiteImplicite ToDroiteImplicite()
+        {
+            double a = n[0];
+            double b = n[1];
+            double c = dist * n.magnitude();
+            return new DroiteImplicite(a, b, c);
         }
     }
 }

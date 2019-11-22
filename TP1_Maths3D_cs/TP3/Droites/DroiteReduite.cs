@@ -20,5 +20,14 @@ namespace Moteur3D
         {
             return "droite : y = " + m + "*x + " + y0;
         }
+
+        // Conversions
+        public DroiteImplicite ToDroiteImplicite()
+        {
+            double a = -m;
+            double b = 1.0;
+            double c = y0;
+            return new DroiteImplicite(a, b, c);
+        }
     }
 }

@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TP2\AngleEuler.cs" />
+    <Compile Include="TP3\Cercles\CercleDirect.cs" />
     <Compile Include="TP3\Droites\DroiteImplicite.cs" />
     <Compile Include="TP3\Droites\DroiteMediatrice.cs" />
     <Compile Include="TP3\Droites\DroiteNormaleDistance.cs" />
