@@ -221,7 +221,7 @@ namespace Moteur3D
             return scalaire * mat;
         }
 
-        public static Matrix operator *(VectCartesien vec, Matrix mat)
+        /*public static Matrix operator *(VectCartesien vec, Matrix mat)
         {
             if (vec.getDim() != mat.nb_col)
                 throw new System.ArgumentException("matrix don't have the right dimension: mat colmns must equals vec dim");
@@ -232,9 +232,22 @@ namespace Moteur3D
                 res_mat[0, i] = vec * mat.getCol(i);
             }
             return res_mat;
+        }*/
+
+        public static VectCartesien operator *(VectCartesien vec, Matrix mat)
+        {
+            if (vec.getDim() != mat.nb_col)
+                throw new System.ArgumentException("matrix don't have the right dimension: mat colmns must equals vec dim");
+
+            VectCartesien res_vec = VectCartesien.zeros(vec.getDim());
+            for (int i = 0; i < vec.getDim(); i++)
+            {
+                res_vec[i] = vec * mat.getCol(i);
+            }
+            return res_vec;
         }
 
-        public static Matrix operator *(Matrix mat, VectCartesien vec)
+        /*public static Matrix operator *(Matrix mat, VectCartesien vec)
         {
             if (vec.getDim() != mat.nb_col)
                 throw new System.ArgumentException("matrix don't have the right dimension: mat colmns must equals vec dim");
@@ -245,6 +258,18 @@ namespace Moteur3D
                 res_mat[0, i] = mat.getRow(i) * vec;
             }
             return res_mat;
+        }*/
+        public static VectCartesien operator *(Matrix mat, VectCartesien vec)
+        {
+            if (vec.getDim() != mat.nb_col)
+                throw new System.ArgumentException("matrix don't have the right dimension: mat colmns must equals vec dim");
+
+            VectCartesien res_vec = VectCartesien.zeros(vec.getDim());
+            for (int i = 0; i < vec.getDim(); i++)
+            {
+                res_vec[i] = mat.getRow(i) * vec;
+            }
+            return res_vec;
         }
 
         // Definition of rotation matrix

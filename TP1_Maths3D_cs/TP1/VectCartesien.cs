@@ -126,7 +126,7 @@ namespace Moteur3D
                 int i = (k + 1) % 3;
                 int j = (k + 2) % 3;
                 res_elems[k] = (this.elems[i] * vec2.elems[j]) - (this.elems[j] * vec2.elems[i]);
-                Console.WriteLine("produitvect: " + res_elems[k] + " i : " + i + j + k + " // " + this.elems[i] + vec2.elems[j] + " / " + this.elems[j] + vec2.elems[i]);
+                //Console.WriteLine("produitvect: " + res_elems[k] + " i : " + i + j + k + " // " + this.elems[i] + vec2.elems[j] + " / " + this.elems[j] + vec2.elems[i]);
             }
             return new VectCartesien(res_elems);
         }

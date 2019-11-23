@@ -50,7 +50,47 @@ namespace Moteur3D
             Console.WriteLine(new CercleParam(p1,  4.5));
             Console.WriteLine(new CercleImplicite(10,2,4));
 
+            // AABB
+            Console.WriteLine("\n__AABB");
+            VectCartesien v1 = new VectCartesien(7, 11, -5);
+            VectCartesien v2 = new VectCartesien(2, 3, 8);
+            VectCartesien v3 = new VectCartesien(-3, 3, 1);
+            VectCartesien v4 = new VectCartesien(-5, -7, 0);
+            VectCartesien v5 = new VectCartesien(6, 3, 4);
+            Matrix rot = Matrix.rotation_z(Math.PI/4);
 
+            AABB aabb = new AABB(v1, v2, v3, v4, v5);
+            Console.WriteLine(aabb);
+            Console.WriteLine("après transfo (par M = " + rot + "): \n" + aabb.Rotate(rot));
+
+            /*AABB aabb_test = new AABB(v1 * rot, v2 * rot, v3 * rot, v4 * rot, v5 * rot);
+            Console.WriteLine("aabb from vect rotated in first place : " + aabb_test);
+            Console.WriteLine("aabb == aabb__test ? : " + (aabb == aabb_test));
+            Console.WriteLine("Vects rotated : " + v1*rot + v2*rot + v3*rot + v4*rot + v5*rot);*/
+
+            // Plans
+            Console.WriteLine("__Plans");
+            Point3D A = new Point3D(6, 10, -2);
+            Point3D B = new Point3D(3, -1, 17);
+            Point3D C = new Point3D(-8, 8, 0);
+            Point3D D = new Point3D(3, 4, 5);
+            PlanImplicite plani = new PlanImplicite(A, 5.4);
+            PlanImplicite plan = new PlanImplicite(A, B, C);
+            Console.WriteLine("plani = " + plani);
+            Console.WriteLine("plan = " + plan);
+            Console.WriteLine(D.ToString() + " est à une distance du plan de : " + plan.Distance(D));
+
+            // Triangles
+            Console.WriteLine("__Triangles");
+            Point3D E = new Point3D(13.6, -0.46, 17.11);
+            Triangle t = new Triangle(A, B, C);
+            //Triangle t = new Triangle(new Point2D(1,2), new Point2D(3,5), new Point2D(4, 3));
+            //Point2D E = new Point2D(2.6667,3.33333);
+            Console.WriteLine(t);
+            Console.WriteLine(t.Barycentre());
+            Console.WriteLine("Coordonnées barycentriques de (" + E + ") : " + t.ToBarycentrique(E));
+            Console.WriteLine("incenter : " + t.Incenter());
+            Console.WriteLine("circumcenter : " + t.Circumcenter());
         }
 
       

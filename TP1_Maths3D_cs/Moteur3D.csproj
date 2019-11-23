@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TP2\AngleEuler.cs" />
-    <Compile Include="TP3\AABBs\AABB.cs" />
+    <Compile Include="TP3\AABB.cs" />
     <Compile Include="TP3\Cercles\CercleDirect.cs" />
     <Compile Include="TP3\Cercles\CercleImplicite.cs" />
     <Compile Include="TP3\Cercles\CercleParam.cs" />
@@ -54,6 +54,7 @@
     <Compile Include="TP3\Droites\DroiteNormaleDistance.cs" />
     <Compile Include="TP3\Droites\DroiteNormalePoint.cs" />
     <Compile Include="TP3\Droites\DroiteReduite.cs" />
+    <Compile Include="TP3\Plans\PlanImplicite.cs" />
     <Compile Include="TP3\Points\Point2D.cs" />
     <Compile Include="TP3\Points\Point3D.cs" />
     <Compile Include="TP2\Quaternion.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="TP3\Spheres\SphereDirecte.cs" />
     <Compile Include="TP3\Spheres\SphereImplicite.cs" />
     <Compile Include="TP3\Spheres\SphereParam.cs" />
+    <Compile Include="TP3\Triangle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
