@@ -147,6 +147,7 @@ namespace Moteur3D
 
             // Inversible
             Console.WriteLine("inversibilité de m: " + m.isInversible());
+
         }
     }
 }

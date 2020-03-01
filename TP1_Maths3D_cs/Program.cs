@@ -12,15 +12,18 @@ namespace Moteur3D
         static void Main(string[] args)
         {
             Console.WriteLine("Start main.");
-            // TP 1
+
+            // TP 1
             //TP1.exec();
 
             // TP 2 
             //TP2.exec();
 
             //TP3
-            TP3.exec();
-            
+            //TP3.exec();
+
+            // Affichage
+            AffichageMain.exec();
 
             // Program closes auto close without that
             while (true)

@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Affichage\CameraRas.cs" />
+    <Compile Include="Affichage\Rasterization.cs" />
+    <Compile Include="Main_TPs\AffichageMain.cs" />
     <Compile Include="TP2\AngleEuler.cs" />
     <Compile Include="TP3\AABB.cs" />
     <Compile Include="TP3\Cercles\CercleDirect.cs" />
