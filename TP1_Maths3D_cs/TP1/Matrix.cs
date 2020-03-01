@@ -221,6 +221,16 @@ namespace Moteur3D
             return scalaire * mat;
         }
 
+        // division by R
+        public static Matrix operator /(Matrix mat, double scalaire)
+        {
+            Matrix res_mat = mat.copy();
+            for (int i = 0; i < res_mat.nb_row; i++)
+                for (int j = 0; j < res_mat.nb_col; j++)
+                    res_mat[i, j] /= scalaire;
+            return res_mat;
+        }
+
         /*public static Matrix operator *(VectCartesien vec, Matrix mat)
         {
             if (vec.getDim() != mat.nb_col)
@@ -237,7 +247,7 @@ namespace Moteur3D
         public static VectCartesien operator *(VectCartesien vec, Matrix mat)
         {
             if (vec.getDim() != mat.nb_col)
-                throw new System.ArgumentException("matrix don't have the right dimension: mat colmns must equals vec dim");
+                throw new System.ArgumentException("matrix don't have the right dimension: mat colmns ("+ mat.nb_col +") must equals vec dim (" + vec.getDim() + ")");
 
             VectCartesien res_vec = VectCartesien.zeros(vec.getDim());
             for (int i = 0; i < vec.getDim(); i++)
@@ -504,7 +514,9 @@ namespace Moteur3D
             for (int i = 0; i < nb_row; i++)
                 for(int j =0; j < nb_col; j++)
                 {
-                    new_items[i, j] = ((-1) ^ (i + j)) * (this.subMatrix(i,j)).calculDeterminant();
+                    new_items[i, j] = /*((-1) ^ (i + j)) * */ this.subMatrix(i,j).calculDeterminant();
+                    if ((i + j) % 2 == 1)
+                        new_items[i, j] = -new_items[i, j]; 
                 }
 
 
@@ -532,13 +544,7 @@ namespace Moteur3D
 
             else
             {
-                Matrix matrice_to_return = this.comatrice().transposee();
-
-                for (int i = 0; i < matrice_to_return.nb_row; i++)
-                    for (int j = 0; j < matrice_to_return.nb_col; j++)
-                    {
-                        matrice_to_return[i, j] = matrice_to_return[i, j] / this.calculDeterminant();
-                    }
+                Matrix matrice_to_return = this.comatrice().transposee() / calculDeterminant();
 
                 return matrice_to_return;
             }
