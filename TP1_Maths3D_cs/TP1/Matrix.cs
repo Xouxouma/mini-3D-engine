@@ -321,7 +321,7 @@ namespace Moteur3D
         }
 
         // Rotation around an arbitrary axis
-        public static Matrix rotation(double angle, int x, int y, int z)
+        public static Matrix rotation(double angle, double x, double y, double z)
         {
             VectCartesien n = new VectCartesien(x, y, z).normalize();
             Matrix res_mat = (Matrix.rotation(angle, 0) + Matrix.rotation(angle, 0) + Matrix.rotation(angle, 0)) * (new Matrix(3, 3, 0.5));

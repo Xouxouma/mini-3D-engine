@@ -58,6 +58,7 @@
     <Compile Include="TP3\Points\Point2D.cs" />
     <Compile Include="TP3\Points\Point3D.cs" />
     <Compile Include="TP2\Quaternion.cs" />
+    <Compile Include="TP3\Polygone.cs" />
     <Compile Include="TP3\Rayons\RayonDirect.cs" />
     <Compile Include="Main_TPs\TP1.cs" />
     <Compile Include="Main_TPs\TP2.cs" />

@@ -91,6 +91,12 @@ namespace Moteur3D
             Console.WriteLine("Coordonnées barycentriques de (" + E + ") : " + t.ToBarycentrique(E));
             Console.WriteLine("incenter : " + t.Incenter());
             Console.WriteLine("circumcenter : " + t.Circumcenter());
+
+            // Mesh
+            VectCartesien A2 = B + C - A;
+            Triangle t2 = new Triangle(A2, B, C);
+            Polygone para = new Polygone(t,t2);
+            Console.WriteLine("parallelogramme = " + para);
         }
 
       
