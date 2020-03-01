@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
+using System.Windows.Forms;
+using System.Drawing.Imaging;
 
 namespace Moteur3D
 {
@@ -42,6 +45,43 @@ namespace Moteur3D
             Console.Write("Test déterminant: " + m.calculDeterminant());
             Console.Write("Test comatrice: " + m.comatrice());
             Console.Write("Test submatrix 0 0 : " + m.subMatrix(1, 2));*/
+
+
+
+            Bitmap bitmap = new Bitmap((int)winResX, (int)winResY, PixelFormat.Format48bppRgb);
+
+            /*  BitmapData bmd = bm.LockBits(new Rectangle(0, 0, 10, 10), System.Drawing.Imaging.ImageLockMode.ReadOnly, bm.PixelFormat);
+
+              int PixelSize = 4;
+              unsafe
+              {
+                  for (int y = 0; y < bmd.Height; y++)
+                  {
+                      byte* row = (byte*)bmd.Scan0 + (y * bmd.Stride);
+                      for (int x = 0; x < bmd.Width; x++)
+                      {
+                          row[x * PixelSize] = 150;
+                      }
+                  }
+              }
+              */
+
+
+            // Draw myBitmap to the screen.
+            //e.Graphics.DrawImage(bitmap, 0, 0, bitmap.Width, bitmap.Height);
+
+            // Set each pixel in myBitmap to black.
+            /*  for (int Xcount = 0; Xcount < bitmap.Width; Xcount++)
+              {
+                  for (int Ycount = 0; Ycount < bitmap.Height; Ycount++)
+                  {
+                      bitmap.SetPixel(Xcount, Ycount, Color.BlueViolet);
+                  }
+              }*/
+
+            BufferingExample buffering = new BufferingExample();
+
+            Application.Run(buffering);
 
             Console.WriteLine("Fin Affichage");
         }

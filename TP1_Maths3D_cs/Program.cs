@@ -24,7 +24,7 @@ namespace Moteur3D
 
             // Affichage
             AffichageMain.exec();
-
+            
             // Program closes auto close without that
             while (true)
             {
