@@ -124,26 +124,6 @@ namespace Moteur3D
 
         private void DrawLine(VectCartesien pt0, VectCartesien pt1, Color color)
         {
-            //VectCartesien pt1, pt2;
-            //if (Math.Min(pt1_tmp[0], pt2_tmp[0]) == pt1_tmp[0])
-            //{
-            //    pt1 = pt1_tmp;
-            //    pt2 = pt2_tmp;
-            //}
-            //else
-            //{
-            //    pt1 = pt2_tmp;
-            //    pt2 = pt1_tmp;
-            //}
-
-            //VectCartesien dir = pt2 - pt1;
-            //double dx = dir[0];
-            //double dy = dir[1];
-            //int y = pt1[0];
-            //for (int x = pt1[0]; x < pt2[0]; x++)
-            //{
-            //    bm.SetPixel(x, y, color);
-            //}
             double x0 = pt0[0];
             double x1 = pt1[0];
             double y0 = pt0[1];
@@ -153,21 +133,15 @@ namespace Moteur3D
             double sx = x0 < x1 ? 1 : -1;
             double dy = -Math.Abs(y1 - y0);
             double sy = y0 < y1 ? 1 : -1;
-            double err = dx + y0;
-            double e2;
 
             if (Math.Min(Math.Abs(dx), Math.Abs(dy)) == Math.Abs(dx))
                 sx = sx * Math.Abs(dx / dy);
             else sy = sy * Math.Abs(dy / dx);
 
-            Console.WriteLine("\n\nDrawLine : pt0 = " + pt0 + " ; pt1 = " +pt1);
-            Console.WriteLine("dx = " + dx + " ; dy = " + dy + " ; sx = " + sx + " ; sy = " + sy);
-
             while ((int) Math.Round(x0) != (int)x1 && (int) Math.Round(y0) != (int)y1)
             {
                 x0 += sx;
                 y0 += sy;
-                Console.WriteLine("x0 = " + x0 + " ; y0 = " + y0);
                 bm.SetPixel((int)x0, (int)y0, color);
             }
         }
