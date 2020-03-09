@@ -142,14 +142,14 @@ namespace Moteur3D
 
             Rasterization rasterization = new Rasterization(cameraPos, cameraCible, winResX, winResY, fovX, fovY);
 
-            VectCartesien pointTest = cameraCible + new VectCartesien(0, 1, 20);
+            VectCartesien pointTest = cameraCible + new VectCartesien(0, 1, 2);
             VectCartesien pScreen = rasterization.placePointSurEcran(pointTest);
             Console.WriteLine("buff pScreen1 = " + pScreen);
 
 
-            VectCartesien pointTest2 = cameraCible + new VectCartesien(-4, -2, -10);
-            VectCartesien pScreen2 = rasterization.placePointSurEcran(pointTest2);
-            Console.WriteLine("buff pScreen2 = " + pScreen2);
+            //VectCartesien pointTest2 = cameraCible + new VectCartesien(-4, -2, -10);
+            //VectCartesien pScreen2 = rasterization.placePointSurEcran(pointTest2);
+            //Console.WriteLine("buff pScreen2 = " + pScreen2);
 
             Random rnd = new Random();
             /* for (int i = 0; i < this.Height; i++)
@@ -167,10 +167,23 @@ namespace Moteur3D
             {
                 for (int Ycount = 0; Ycount < bm.Height; Ycount++)
                 {
-                    bm.SetPixel(Xcount, Ycount, Color.Violet);
+                    bm.SetPixel(Xcount, Ycount, Color.Black);
+                }
+            }
+
+            bm.SetPixel((int)pScreen[0], (int)pScreen[1], Color.Red);
+            bm.SetPixel(0, 0, Color.Yellow);
+
+            for (int Xcount = (int)pScreen[0] - 10 ; Xcount < (int)pScreen[0] + 10; Xcount++)
+            {
+                for (int Ycount = (int)pScreen[1] - 10; Ycount < (int)pScreen[1] + 10; Ycount++)
+                {
+                    bm.SetPixel(Xcount, Ycount, Color.BlueViolet);
                 }
             }
         }
+
+        //bm.SetPixel(Xcount, Ycount, Color.DarkViolet);
 
         protected override void OnPaint(PaintEventArgs e)
         {
