@@ -17,6 +17,7 @@ namespace Moteur3D
         private byte count;
 
         private Bitmap bm;
+        private Rasterization rasterization;
 
         public BufferingExample() : base()
         {
@@ -121,6 +122,71 @@ namespace Moteur3D
             this.Refresh();
         }
 
+        private void DrawLine(VectCartesien pt0, VectCartesien pt1, Color color)
+        {
+            //VectCartesien pt1, pt2;
+            //if (Math.Min(pt1_tmp[0], pt2_tmp[0]) == pt1_tmp[0])
+            //{
+            //    pt1 = pt1_tmp;
+            //    pt2 = pt2_tmp;
+            //}
+            //else
+            //{
+            //    pt1 = pt2_tmp;
+            //    pt2 = pt1_tmp;
+            //}
+
+            //VectCartesien dir = pt2 - pt1;
+            //double dx = dir[0];
+            //double dy = dir[1];
+            //int y = pt1[0];
+            //for (int x = pt1[0]; x < pt2[0]; x++)
+            //{
+            //    bm.SetPixel(x, y, color);
+            //}
+            double x0 = pt0[0];
+            double x1 = pt1[0];
+            double y0 = pt0[1];
+            double y1 = pt1[1];
+
+            double dx = Math.Abs(x1 - x0);
+            double sx = x0 < x1 ? 1 : -1;
+            double dy = -Math.Abs(y1 - y0);
+            double sy = y0 < y1 ? 1 : -1;
+            double err = dx + y0;
+            double e2;
+
+            if (Math.Min(Math.Abs(dx), Math.Abs(dy)) == Math.Abs(dx))
+                sx = sx * Math.Abs(dx / dy);
+            else sy = sy * Math.Abs(dy / dx);
+
+            Console.WriteLine("\n\nDrawLine : pt0 = " + pt0 + " ; pt1 = " +pt1);
+            Console.WriteLine("dx = " + dx + " ; dy = " + dy + " ; sx = " + sx + " ; sy = " + sy);
+
+            while ((int) Math.Round(x0) != (int)x1 && (int) Math.Round(y0) != (int)y1)
+            {
+                x0 += sx;
+                y0 += sy;
+                Console.WriteLine("x0 = " + x0 + " ; y0 = " + y0);
+                bm.SetPixel((int)x0, (int)y0, color);
+            }
+        }
+
+        private void DrawTriangle(Triangle triangle)
+        {
+            VectCartesien[] vertices = triangle.getVertices();
+            VectCartesien[] ptsEcran = new VectCartesien[3];
+
+            for (int i = 0; i < 3; i++)
+                ptsEcran[i] = rasterization.placePointSurEcran(vertices[i]);
+
+            for (int i = 0; i < 3; i++)
+            { 
+                bm.SetPixel((int)ptsEcran[i][0], (int)ptsEcran[i][1], Color.Yellow);
+                DrawLine(ptsEcran[i], ptsEcran[(i + 1) % 3], Color.Green);
+            }
+        }
+
         private void DrawToBuffer(Graphics g)
         {
             // Clear the graphics buffer every update.
@@ -139,13 +205,26 @@ namespace Moteur3D
 
             //VectCartesien cameraPos = new VectCartesien(0, 0, 0);
             //VectCartesien cameraCible = new VectCartesien(0, 5, -10);
-
-            Rasterization rasterization = new Rasterization(cameraPos, cameraCible, winResX, winResY, fovX, fovY);
+            
+            rasterization = new Rasterization(cameraPos, cameraCible, winResX, winResY, fovX, fovY);
 
             VectCartesien pointTest = cameraCible + new VectCartesien(0, 1, 2);
             VectCartesien pScreen = rasterization.placePointSurEcran(pointTest);
             Console.WriteLine("buff pScreen1 = " + pScreen);
 
+            Triangle triangle = new Triangle(cameraCible + new VectCartesien(0, 1, 2), cameraCible + new VectCartesien(-10,-10,11), cameraCible + new VectCartesien(6,50,60));
+            DrawTriangle(triangle);
+
+            //bm.SetPixel((int)pScreen[0], (int)pScreen[1], Color.Red);
+            //bm.SetPixel(0, 0, Color.Yellow);
+
+            //for (int Xcount = ((int)pScreen[0]) - 10; Xcount < (int)pScreen[0] + 10; Xcount++)
+            //{
+            //    for (int Ycount = ((int)pScreen[1]) - 10; Ycount < (int)pScreen[1] + 10; Ycount++)
+            //    {
+            //        bm.SetPixel(Xcount, Ycount, Color.BlueViolet);
+            //    }
+            //}
 
             //VectCartesien pointTest2 = cameraCible + new VectCartesien(-4, -2, -10);
             //VectCartesien pScreen2 = rasterization.placePointSurEcran(pointTest2);
@@ -163,24 +242,14 @@ namespace Moteur3D
                              pixels[y, x] = colorData;
                  }*/
 
-            for (int Xcount = 0; Xcount < bm.Width; Xcount++)
-            {
-                for (int Ycount = 0; Ycount < bm.Height; Ycount++)
-                {
-                    bm.SetPixel(Xcount, Ycount, Color.Black);
-                }
-            }
+            //for (int Xcount = 0; Xcount < bm.Width; Xcount++)
+            //{
+            //    for (int Ycount = 0; Ycount < bm.Height; Ycount++)
+            //    {
+            //        bm.SetPixel(Xcount, Ycount, Color.Black);
+            //    }
+            //}
 
-            bm.SetPixel((int)pScreen[0], (int)pScreen[1], Color.Red);
-            bm.SetPixel(0, 0, Color.Yellow);
-
-            for (int Xcount = (int)pScreen[0] - 10 ; Xcount < (int)pScreen[0] + 10; Xcount++)
-            {
-                for (int Ycount = (int)pScreen[1] - 10; Ycount < (int)pScreen[1] + 10; Ycount++)
-                {
-                    bm.SetPixel(Xcount, Ycount, Color.BlueViolet);
-                }
-            }
         }
 
         //bm.SetPixel(Xcount, Ycount, Color.DarkViolet);

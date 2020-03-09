@@ -26,6 +26,11 @@ namespace Moteur3D
             return "Triangle : {" + v[0] + " ; " + v[1] + ";" + v[2] + "}";
         }
 
+        public VectCartesien[] getVertices()
+        {
+            return v;
+        }
+
         // Calcul attributs de base
         public VectCartesien[] getEdges()
         {
