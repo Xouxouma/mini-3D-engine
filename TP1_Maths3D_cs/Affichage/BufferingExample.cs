@@ -152,7 +152,10 @@ namespace Moteur3D
             VectCartesien[] ptsEcran = new VectCartesien[3];
 
             for (int i = 0; i < 3; i++)
+            {
                 ptsEcran[i] = rasterization.placePointSurEcran(vertices[i]);
+                Console.WriteLine("PtEcran = " + ptsEcran[i]);
+            }
 
             for (int i = 0; i < 3; i++)
             { 
@@ -186,7 +189,8 @@ namespace Moteur3D
             VectCartesien pScreen = rasterization.placePointSurEcran(pointTest);
             Console.WriteLine("buff pScreen1 = " + pScreen);
 
-            Triangle triangle = new Triangle(cameraCible + new VectCartesien(0, 1, 2), cameraCible + new VectCartesien(-10,-10,11), cameraCible + new VectCartesien(6,50,60));
+            //Triangle triangle = new Triangle(cameraCible + new VectCartesien(0, 1, 2), cameraCible + new VectCartesien(-10,-10,11), cameraCible + new VectCartesien(6,50,60));
+            Triangle triangle = new Triangle(new VectCartesien(-0.5,-0.5,0.5), new VectCartesien(-0.5,0.5,0.5), new VectCartesien(0.5,0.5,0.5));
             DrawTriangle(triangle);
 
             //bm.SetPixel((int)pScreen[0], (int)pScreen[1], Color.Red);
