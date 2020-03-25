@@ -15,7 +15,16 @@ namespace Moteur3D
         {
             return "AABB : {" + p_min + " ; " + p_max + "}";
         }
-        
+        public VectCartesien getMin()
+        {
+            return p_min;
+        }
+
+        public VectCartesien getMax()
+        {
+            return p_max;
+        }
+
         // Vecteurs de l'AABB
         public VectCartesien Centre()
         {

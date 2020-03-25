@@ -161,5 +161,20 @@ namespace Moteur3D
             return num / (2*c[0]+c[1]+c[2]);
             return VectCartesien.zeros(3);
         }
+        
+        public bool ptBarycentriqueIsIn(VectCartesien ptBarycentrique)
+        {
+            for (int k = 0; k < 3; k++)
+                if (ptBarycentrique[k] < 0 || ptBarycentrique[k] > 1)
+                    return false;
+
+            return true;
+        }
+        public bool PtIsIn(VectCartesien pt)
+        {
+            VectCartesien ptBarycentrique = ToBarycentrique(pt);
+
+            return this.ptBarycentriqueIsIn(ptBarycentrique);
+        }
     }
 }

@@ -18,6 +18,8 @@ namespace Moteur3D
 
         private Bitmap bm;
         private RenderingTransformation renderingTransformation;
+        public enum RenderingMode { Line, Fill };
+        public RenderingMode renderingMode = RenderingMode.Fill;
 
         public BufferingExample() : base()
         {
@@ -146,7 +148,7 @@ namespace Moteur3D
             }
         }
 
-        private void DrawTriangle(Triangle triangle)
+        private void DrawTriangleLine(Triangle triangle)
         {
             VectCartesien[] vertices = triangle.getVertices();
             VectCartesien[] ptsEcran = new VectCartesien[3];
@@ -162,6 +164,49 @@ namespace Moteur3D
                 bm.SetPixel((int)ptsEcran[i][0], (int)ptsEcran[i][1], Color.Yellow);
                 DrawLine(ptsEcran[i], ptsEcran[(i + 1) % 3], Color.Green);
             }
+        }
+
+        private void DrawTriangleFill(Triangle untransformedTriangle)
+        {
+            VectCartesien[] vertices = untransformedTriangle.getVertices();
+            VectCartesien[] ptsEcran = new VectCartesien[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                ptsEcran[i] = renderingTransformation.placePointSurEcran(vertices[i]);
+                Console.WriteLine("PtEcran = " + ptsEcran[i]);
+            }
+
+            Triangle triangle = new Triangle(ptsEcran[0], ptsEcran[1], ptsEcran[2]);
+
+            AABB aabb = new AABB(triangle.getVertices());
+            VectCartesien min = aabb.getMin();
+            VectCartesien max = aabb.getMax();
+            int iMin = Convert.ToInt32(min[0]);
+            int jMin = Convert.ToInt32(min[1]) + 1;
+            int iMax = Convert.ToInt32(max[0]);
+            int jMax = Convert.ToInt32(max[1]) + 1;
+            //Console.WriteLine("iMin = " + iMin + " , iMax = " + iMax);
+            //Console.WriteLine("jMin = " + iMin + " , jMax = " + jMax);
+            for (int i = iMin; i < iMax; i++)
+                for (int j = jMin; j < jMax; j++)
+                {
+                    //Console.WriteLine("i = " + i + " , j = " + j);
+                    VectCartesien ptFenetre = new VectCartesien(i, j);
+                    VectCartesien ptBarycentrique = triangle.ToBarycentrique2D(ptFenetre);
+                    //Console.WriteLine("ptBarycentrique = " + ptBarycentrique);
+                    //Console.WriteLine("IS IN = " + triangle.ptBarycentriqueIsIn(ptBarycentrique));
+                    if (triangle.ptBarycentriqueIsIn(ptBarycentrique))
+                        bm.SetPixel(i, j, Color.BlueViolet);
+                    //else bm.SetPixel(i, j, Color.Orange);
+                }
+        }
+
+        private void DrawTriangle(Triangle triangle)
+        {
+            if (renderingMode == RenderingMode.Line)
+                DrawTriangleLine(triangle);
+            else DrawTriangleFill(triangle);
         }
 
         private void DrawToBuffer(Graphics g)
