@@ -51,7 +51,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Affichage\CameraRas.cs" />
-    <Compile Include="Affichage\Rasterization.cs" />
+    <Compile Include="Affichage\RasterizationDraft.cs" />
+    <Compile Include="Affichage\RenderingTransformation.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

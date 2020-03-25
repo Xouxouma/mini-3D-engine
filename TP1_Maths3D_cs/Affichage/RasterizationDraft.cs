@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Moteur3D
 {
-    class Rasterization
+    class RasterizationDraft
     {
         double cameraFovY;
         VectCartesien winRes;
@@ -23,7 +23,7 @@ namespace Moteur3D
 
         public double imageRatio { get; private set; }
 
-        public Rasterization(VectCartesien posCamera, VectCartesien cibleCamera, double winResX, double winResY, double fovX, double fovY)
+        public RasterizationDraft(VectCartesien posCamera, VectCartesien cibleCamera, double winResX, double winResY, double fovX, double fovY)
         {
             this.winRes = new VectCartesien(winResX, winResY);
             placeCamera(posCamera, cibleCamera);
@@ -248,6 +248,8 @@ namespace Moteur3D
             Console.WriteLine("^^winRes = " + winRes);
             Console.WriteLine("^^^^^^ P4 = " + p4);
             dedans = estDansFrustrum(pClip);
+            Console.WriteLine("dedans : " + dedans);
+            Console.WriteLine("dedans : " + dedans);
             Console.WriteLine("dedans : " + dedans);
             return pWindow;
         }

@@ -17,7 +17,7 @@ namespace Moteur3D
         private byte count;
 
         private Bitmap bm;
-        private Rasterization rasterization;
+        private RenderingTransformation renderingTransformation;
 
         public BufferingExample() : base()
         {
@@ -153,7 +153,7 @@ namespace Moteur3D
 
             for (int i = 0; i < 3; i++)
             {
-                ptsEcran[i] = rasterization.placePointSurEcran(vertices[i]);
+                ptsEcran[i] = renderingTransformation.placePointSurEcran(vertices[i]);
                 Console.WriteLine("PtEcran = " + ptsEcran[i]);
             }
 
@@ -182,11 +182,11 @@ namespace Moteur3D
 
             //VectCartesien cameraPos = new VectCartesien(0, 0, 0);
             //VectCartesien cameraCible = new VectCartesien(0, 5, -10);
-            
-            rasterization = new Rasterization(cameraPos, cameraCible, winResX, winResY, fovX, fovY);
+
+            renderingTransformation = new RenderingTransformation(cameraPos, cameraCible, winResX, winResY, fovX, fovY);
 
             VectCartesien pointTest = cameraCible + new VectCartesien(0, 1, 2);
-            VectCartesien pScreen = rasterization.placePointSurEcran(pointTest);
+            VectCartesien pScreen = renderingTransformation.placePointSurEcran(pointTest);
             Console.WriteLine("buff pScreen1 = " + pScreen);
 
             //Triangle triangle = new Triangle(cameraCible + new VectCartesien(0, 1, 2), cameraCible + new VectCartesien(-10,-10,11), cameraCible + new VectCartesien(6,50,60));

@@ -25,22 +25,22 @@ namespace Moteur3D
             //VectCartesien cameraPos = new VectCartesien(0, 0, 0);
             //VectCartesien cameraCible = new VectCartesien(0, 5, -10);
 
-            Rasterization rasterization = new Rasterization(cameraPos, cameraCible, winResX, winResY, fovX, fovY);
+            //Rasterization rasterization = new Rasterization(cameraPos, cameraCible, winResX, winResY, fovX, fovY);
 
-            VectCartesien pointTest = cameraCible + new VectCartesien(0, 1, 20);
-            VectCartesien pScreen = rasterization.placePointSurEcran(pointTest);
-            Console.WriteLine("pScreen1 = " + pScreen);
-
-
-            VectCartesien pointTest2 = cameraCible + new VectCartesien(-4, -2, -10);
-            VectCartesien pScreen2 = rasterization.placePointSurEcran(pointTest2);
-            Console.WriteLine("pScreen2 = " + pScreen2);
+            //VectCartesien pointTest = cameraCible + new VectCartesien(0, 1, 20);
+            //VectCartesien pScreen = rasterization.placePointSurEcran(pointTest);
+            //Console.WriteLine("pScreen1 = " + pScreen);
 
 
-            Matrix m = new Matrix(
-                new VectCartesien(3, -2, 0),
-                new VectCartesien(1, 4, 0),
-                new VectCartesien(0, 0, 2));
+            //VectCartesien pointTest2 = cameraCible + new VectCartesien(-4, -2, -10);
+            //VectCartesien pScreen2 = rasterization.placePointSurEcran(pointTest2);
+            //Console.WriteLine("pScreen2 = " + pScreen2);
+
+
+            //Matrix m = new Matrix(
+            //    new VectCartesien(3, -2, 0),
+            //    new VectCartesien(1, 4, 0),
+            //    new VectCartesien(0, 0, 2));
             /*Console.WriteLine("Test inversibilité de m : " + m +" \n Inverse de m : " + m.inverse());
             Console.Write("Test déterminant: " + m.calculDeterminant());
             Console.Write("Test comatrice: " + m.comatrice());
@@ -48,7 +48,7 @@ namespace Moteur3D
 
 
 
-            Bitmap bitmap = new Bitmap((int)winResX, (int)winResY, PixelFormat.Format48bppRgb);
+            //Bitmap bitmap = new Bitmap((int)winResX, (int)winResY, PixelFormat.Format48bppRgb);
 
             /*  BitmapData bmd = bm.LockBits(new Rectangle(0, 0, 10, 10), System.Drawing.Imaging.ImageLockMode.ReadOnly, bm.PixelFormat);
 
