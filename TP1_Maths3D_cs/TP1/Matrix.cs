@@ -579,9 +579,9 @@ namespace Moteur3D
         public static Matrix translation(VectCartesien v)
         {
             Matrix res_mat = I(4);
-            res_mat[0, 0] = v[0];
-            res_mat[0, 1] = v[1];
-            res_mat[0, 2] = v[2];
+            res_mat[3, 0] = v[0];
+            res_mat[3, 1] = v[1];
+            res_mat[3, 2] = v[2];
             return res_mat;
         }
 

@@ -135,13 +135,13 @@ namespace Moteur3D
             this.setZoom(zoomX, zoomY);
         }
 
-        public VectCartesien placePointSurEcran(VectCartesien p)
+        public VectCartesien placePointSurEcran(VectCartesien p, Matrix model)
         {
             //Console.WriteLine("p : " + p);
             VectCartesien p4 = p.increase_dim();
             p4[3] = 1;
 
-            Matrix MVP = Matrix.I(4) * worldToCamera * perspective_projection();
+            Matrix MVP = model * worldToCamera * perspective_projection();
 
             VectCartesien pClip = p4 * MVP;
 

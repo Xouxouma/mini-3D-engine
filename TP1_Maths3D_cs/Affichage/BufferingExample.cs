@@ -21,6 +21,9 @@ namespace Moteur3D
         public enum RenderingMode { Line, Fill };
         public RenderingMode renderingMode = RenderingMode.Line;
         private double[,] z_buffer;
+        VectCartesien translation;
+        double rotation_x;
+        double rotation_y;
 
         public BufferingExample() : base()
         {
@@ -42,6 +45,10 @@ namespace Moteur3D
 
             bufferingMode = 2;
             count = 0;
+
+            rotation_x = 0;
+            rotation_y = 0;
+            translation = new VectCartesien(0, 0, 0);
 
             // Retrieves the BufferedGraphicsContext for the 
             // current application domain.
@@ -67,6 +74,19 @@ namespace Moteur3D
         }
 
         private void MouseDownHandler(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                Console.WriteLine("Rotation");
+            }
+            else if (e.Button == MouseButtons.Left)
+            {
+                translation += 1;
+                Console.WriteLine("Translation" + translation);
+            }
+        }
+
+        private void MouseDownHandlerOriginal(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -159,14 +179,14 @@ namespace Moteur3D
             }
         }
 
-        private void DrawTriangleLine(Triangle triangle)
+        private void DrawTriangleLine(Triangle triangle, Matrix model)
         {
             VectCartesien[] vertices = triangle.getVertices();
             VectCartesien[] ptsEcran = new VectCartesien[3];
 
             for (int i = 0; i < 3; i++)
             {
-                ptsEcran[i] = renderingTransformation.placePointSurEcran(vertices[i]);
+                ptsEcran[i] = renderingTransformation.placePointSurEcran(vertices[i], model);
                 Console.WriteLine("PtEcran = " + ptsEcran[i]);
             }
 
@@ -177,14 +197,14 @@ namespace Moteur3D
             }
         }
 
-        private void DrawTriangleFill(Triangle untransformedTriangle)
+        private void DrawTriangleFill(Triangle untransformedTriangle, Matrix model)
         {
             VectCartesien[] vertices = untransformedTriangle.getVertices();
             VectCartesien[] ptsEcran = new VectCartesien[3];
-
+            
             for (int i = 0; i < 3; i++)
             {
-                ptsEcran[i] = renderingTransformation.placePointSurEcran(vertices[i]);
+                ptsEcran[i] = renderingTransformation.placePointSurEcran(vertices[i], model);
                 Console.WriteLine("PtEcran = " + ptsEcran[i]);
             }
 
@@ -213,11 +233,11 @@ namespace Moteur3D
                 }
         }
 
-        private void DrawTriangle(Triangle triangle)
+        private void DrawTriangle(Triangle triangle, Matrix model)
         {
             if (renderingMode == RenderingMode.Line)
-                DrawTriangleLine(triangle);
-            else DrawTriangleFill(triangle);
+                DrawTriangleLine(triangle, model);
+            else DrawTriangleFill(triangle, model);
         }
 
         private void DrawToBuffer(Graphics g)
@@ -247,12 +267,22 @@ namespace Moteur3D
 
             renderingTransformation = new RenderingTransformation(cameraPos, cameraCible, Width, Height, fovX, fovY);
 
-            VectCartesien pointTest = cameraCible + new VectCartesien(0, 1, 2);
-            VectCartesien pScreen = renderingTransformation.placePointSurEcran(pointTest);
-            Console.WriteLine("buff pScreen1 = " + pScreen);
+            //VectCartesien pointTest = cameraCible + new VectCartesien(0, 1, 2);
+            //VectCartesien pScreen = renderingTransformation.placePointSurEcran(pointTest);
+            //Console.WriteLine("buff pScreen1 = " + pScreen);
 
             Triangle triangle = new Triangle(new VectCartesien(-0.5,-0.5,0.5), new VectCartesien(-0.5,0.5,0.5), new VectCartesien(0.5,0.5,0.5));
-            DrawTriangle(triangle);
+            Matrix model = Matrix.translation(translation);
+            Matrix rotation = Matrix.rotation_x(rotation_x) * Matrix.rotation_y(rotation_y);
+            model *= rotation.increase_dim();
+
+            //Console.WriteLine("Translation = " + Matrix.translation(translation));
+            //Console.WriteLine("Rotation_x = " + Matrix.rotation_x(rotation_x));
+            //Console.WriteLine("Rotation_y = " + Matrix.rotation_y(rotation_x));
+            //Console.WriteLine("Rotation = " + rotation);
+            //Console.WriteLine("Rotation icreased = " + rotation.increase_dim());
+            //Console.WriteLine("Model = " + model);
+            DrawTriangle(triangle, model);
 
         }
 
@@ -270,19 +300,34 @@ namespace Moteur3D
         void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
             Console.WriteLine("e pressed : " + e.KeyChar);
-            if (e.KeyChar == 'f')
+            switch(e.KeyChar)
             {
-                if (renderingMode == RenderingMode.Line)
-                {
-                    Console.WriteLine("Switch to Fill rendering mode");
-                    renderingMode = RenderingMode.Fill;
-                } else
-                {
-                    Console.WriteLine("Switch to Line rendering mode");
-                    renderingMode = RenderingMode.Line;
-                }
-                Console.WriteLine("Rendering mode = " + renderingMode);
+                case 'f':
+                    {
+                        if (renderingMode == RenderingMode.Line)
+                        {
+                            Console.WriteLine("Switch to Fill rendering mode");
+                            renderingMode = RenderingMode.Fill;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Switch to Line rendering mode");
+                            renderingMode = RenderingMode.Line;
+                        }
+                        Console.WriteLine("Rendering mode = " + renderingMode);
+                    break;
+                    }
+                case (char)Keys.Space:
+                    Console.WriteLine("Pause");
+                    if (timer1.Enabled)
+                        timer1.Stop();
+                    else timer1.Start();
+                    break;
+                default:
+                    Console.WriteLine("unrecognized command");
+                    break;
             }
+
         }
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
