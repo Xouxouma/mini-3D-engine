@@ -263,24 +263,24 @@ namespace Moteur3D
                 //Console.WriteLine("PtEcran = " + ptsEcran[i]);
             }
 
-            Triangle triangle3D = new Triangle(ptsEcran[0], ptsEcran[1], ptsEcran[2]);
-            Triangle triangle2D = new Triangle(
-                new VectCartesien(ptsEcran[0][0], ptsEcran[0][1]),
-                new VectCartesien(ptsEcran[1][0], ptsEcran[1][1]),
-                new VectCartesien(ptsEcran[2][0], ptsEcran[2][1])
-                );
+            Triangle triangleEcran3D = new Triangle(ptsEcran[0], ptsEcran[1], ptsEcran[2]);
+            //Triangle triangle2D = new Triangle(
+            //    new VectCartesien(ptsEcran[0][0], ptsEcran[0][1]),
+            //    new VectCartesien(ptsEcran[1][0], ptsEcran[1][1]),
+            //    new VectCartesien(ptsEcran[2][0], ptsEcran[2][1])
+            //    );
             for (int i = 0; i < 3; i++)
             {
                 Console.WriteLine("PtEcran = " + ptsEcran[i]);
                 VectCartesien pt2D = new VectCartesien(ptsEcran[i][0], ptsEcran[i][1]);
                 Console.WriteLine("pt2D = " + pt2D);
-                VectCartesien ptBarycentriqueTest = triangle2D.ToBarycentrique2D(pt2D);
+                VectCartesien ptBarycentriqueTest = triangleEcran3D.ToBarycentrique2D(pt2D);
                 Console.WriteLine("ptBaycentriqueTest = " + ptBarycentriqueTest);
             }
-                VectCartesien ptBarycentriqueBarycentre = triangle2D.ToBarycentrique2D(triangle2D.Barycentre());
-                Console.WriteLine("Barycentre en barycentrique = " + ptBarycentriqueBarycentre+ "\n\n");
+                //VectCartesien ptBarycentriqueBarycentre = triangleEcran3D.ToBarycentrique2D(triangleEcran3D.Barycentre());
+                //Console.WriteLine("Barycentre en barycentrique = " + ptBarycentriqueBarycentre+ "\n\n");
 
-            AABB aabb = new AABB(triangle2D.getVertices());
+            AABB aabb = new AABB(triangleEcran3D.getVertices());
             VectCartesien min = aabb.getMin();
             VectCartesien max = aabb.getMax();
             int iMin = Convert.ToInt32(min[0]);
@@ -295,12 +295,14 @@ namespace Moteur3D
                 {
                     //Console.WriteLine("i = " + i + " , j = " + j);
                     VectCartesien ptFenetre = new VectCartesien(i, j);
-                    VectCartesien ptBarycentrique = triangle2D.ToBarycentrique2D(ptFenetre);
+                    VectCartesien ptBarycentrique = triangleEcran3D.ToBarycentrique2D(ptFenetre);
+                    double z = triangleEcran3D.getZFromBarycentrique(ptBarycentrique);
                     //Console.WriteLine("ptBarycentrique = " + ptBarycentrique);
                     //Console.WriteLine("IS IN = " + triangle.ptBarycentriqueIsIn(ptBarycentrique));
-                    if (triangle2D.ptBarycentriqueIsIn(ptBarycentrique))
+                    if (triangleEcran3D.ptBarycentriqueIsIn(ptBarycentrique))
                     {
-                        bm.SetPixel(i, j, color);
+                        //bm.SetPixel(i, j, color);
+                        DrawPixel(i, j, color, z);
                     }
                     //else bm.SetPixel(i, j, Color.Orange);
                 }

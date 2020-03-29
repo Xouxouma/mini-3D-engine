@@ -154,6 +154,20 @@ namespace Moteur3D
                 return ToBarycentrique3D(point);
             }
         }
+
+        public VectCartesien FromBarycentrique(VectCartesien ptBarycentrique)
+        {
+            double[] ptCartesien = new double[dim];
+            for (int i = 0; i < dim; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    ptCartesien[i] += ptBarycentrique[j] * v[j][i];
+                }
+            }
+            return new VectCartesien(ptCartesien);
+        }
+
         // Points spéciaux
         public VectCartesien Barycentre()
         {
@@ -204,5 +218,14 @@ namespace Moteur3D
             return this.ptBarycentriqueIsIn(ptBarycentrique);
         }
 
+        public double getZFromBarycentrique(VectCartesien ptBarycentrique)
+        {
+            if (ptBarycentrique.getDim() != 3)
+                throw new System.ArgumentException("ptBarycentrique must be of dim 3");
+            if (dim != 3)
+                throw new System.ArgumentException("dim must be 3");
+
+            return FromBarycentrique(ptBarycentrique)[2];
+        }
     }
 }
