@@ -211,8 +211,6 @@ namespace Moteur3D
                 bm.SetPixel((int)x0, (int)y0, color);
                 VectCartesien ptFenetre = new VectCartesien(x0, y0);
                 VectCartesien ptBarycentrique = triangle2D.ToBarycentrique2D(ptFenetre);
-                Console.WriteLine("ptFenetre = " + ptFenetre);
-                Console.WriteLine("ptBarycentrique = " + ptBarycentrique + "\n");
                 if (Math.Abs(ptBarycentrique[0]) < 0.000001 || Math.Abs(ptBarycentrique[1]) < 0.000001 || Math.Abs(ptBarycentrique[2]) < 0.000001)
                 {
                     bm.SetPixel((int)x0, (int)y0, Color.Violet);
@@ -271,11 +269,11 @@ namespace Moteur3D
             //    );
             for (int i = 0; i < 3; i++)
             {
-                Console.WriteLine("PtEcran = " + ptsEcran[i]);
+                //Console.WriteLine("PtEcran = " + ptsEcran[i]);
                 VectCartesien pt2D = new VectCartesien(ptsEcran[i][0], ptsEcran[i][1]);
-                Console.WriteLine("pt2D = " + pt2D);
+                //Console.WriteLine("pt2D = " + pt2D);
                 VectCartesien ptBarycentriqueTest = triangleEcran3D.ToBarycentrique2D(pt2D);
-                Console.WriteLine("ptBaycentriqueTest = " + ptBarycentriqueTest);
+                //Console.WriteLine("ptBaycentriqueTest = " + ptBarycentriqueTest);
             }
                 //VectCartesien ptBarycentriqueBarycentre = triangleEcran3D.ToBarycentrique2D(triangleEcran3D.Barycentre());
                 //Console.WriteLine("Barycentre en barycentrique = " + ptBarycentriqueBarycentre+ "\n\n");
