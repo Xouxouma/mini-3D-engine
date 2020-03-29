@@ -24,5 +24,15 @@ namespace Moteur3D
             }
             return "Polygone : # " + str + "#";
         }
+
+        public Triangle[] GetTriangles()
+        {
+            return triangles;
+        }
+
+        public int Length()
+        {
+            return triangles.Length;
+        }
     }
 }

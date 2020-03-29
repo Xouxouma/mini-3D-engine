@@ -77,19 +77,44 @@ namespace Moteur3D
             return Math.Sqrt(product);
         }
 
+        public double Aire2DSignee()
+        {
+            double aire = 0;
+            for (int i = 0; i < 3; i++)
+            {
+                int i1 = (i + 1) % 3;
+                int i2 = (i + 2) % 3;
+                aire += (v[i2][1] + v[i1][1]) * (v[i2][0] - v[i1][0]);
+            }
+            return aire / 2;
+        }
+
         // Coordonnées Barycentriques
-        public VectCartesien ToBarycentrique2D(VectCartesien p)
+        public VectCartesien ToBarycentrique2D(VectCartesien p, bool debug = false)
         {
             if (p.getDim() != 2)
                 throw new System.ArgumentException("VectCartesien point must be of dim 2");
             VectCartesien numerateur = VectCartesien.zeros(3);
             for (int i =0; i < 3; i++)
             {
-                int i2 = (i + 2) % 3;
                 int i1 = (i + 1) % 3;
-                numerateur[i] = (p[1]-v[i2][1])*(v[i1][0]-v[i2][0]) + (v[i1][1]-v[i2][1])*(v[i2][0]-p[0]);
+                int i2 = (i + 2) % 3;
+               /* if (debug)
+                {
+                    Console.WriteLine("v[i1] = " + v[i1]);
+                    Console.WriteLine("v[i2] = " + v[i2]);
+                    Console.WriteLine("p = " + p);
+                }*/
+               numerateur[i] = (p[1] - v[i2][1]) * (v[i1][0] - v[i2][0]) + (v[i1][1] - v[i2][1]) * (v[i2][0] - p[0]);
+                /*Triangle sousTriangle = new Triangle(v[i1], v[i2], p);
+                numerateur[i] = 2 * sousTriangle.Aire();
+                if (debug)
+                {
+                    Console.WriteLine("sousAire = " + sousTriangle.Aire2DSignee());
+                    Console.WriteLine("Aire = " + Aire2DSignee());
+                }*/
             }
-            double denominateur = 2 * Aire();
+            double denominateur = 2 * Aire2DSignee();
             return numerateur / denominateur;
         }
         public VectCartesien ToBarycentrique3D(VectCartesien p)
@@ -159,11 +184,13 @@ namespace Moteur3D
             for (int i = 0; i < 3; i++)
                 num += (c[(i + 1) % 3] +c[(i + 2) % 3]) * v[i];
             return num / (2*c[0]+c[1]+c[2]);
-            return VectCartesien.zeros(3);
         }
         
         public bool ptBarycentriqueIsIn(VectCartesien ptBarycentrique)
         {
+            if (ptBarycentrique.getDim() != 3)
+                throw new System.ArgumentException("ptBarycentrique must be of dim 3");
+
             for (int k = 0; k < 3; k++)
                 if (ptBarycentrique[k] < 0 || ptBarycentrique[k] > 1)
                     return false;
@@ -176,5 +203,6 @@ namespace Moteur3D
 
             return this.ptBarycentriqueIsIn(ptBarycentrique);
         }
+
     }
 }

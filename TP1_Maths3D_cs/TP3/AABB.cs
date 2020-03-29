@@ -10,6 +10,7 @@ namespace Moteur3D
     {
         VectCartesien p_min;
         VectCartesien p_max;
+        int dim;
 
         public override String ToString()
         {
@@ -46,12 +47,14 @@ namespace Moteur3D
             double max = Double.PositiveInfinity;
             VectCartesien pmax = new VectCartesien(min, min, min);
             VectCartesien pmin = new VectCartesien(max, max, max);
-            
+            dim = points[0].getDim();
             foreach(VectCartesien p in points)
             {
-                if (p.getDim() != 3)
-                    throw new System.ArgumentException("VectCartesien point must be of size 3.");
-                for (int k = 0; k < 3; k++)
+                //if (p.getDim() != 3)
+                //    throw new System.ArgumentException("VectCartesien point must be of size 3.");
+                if (p.getDim() != dim)
+                    throw new System.ArgumentException("VectCartesien points must be of same size.");
+                for (int k = 0; k < dim; k++)
                 {
                     if (pmin[k] > p[k])
                         pmin[k] = p[k];
@@ -67,12 +70,12 @@ namespace Moteur3D
             VectCartesien new_min = new VectCartesien(0,0,0);
             VectCartesien new_max = new VectCartesien(0,0,0);
 
-            if (m.getRow(0).getDim() != 3 || m.getCol(0).getDim() != 3)
-                throw new System.ArgumentException("Matrix m must be of size 3x3.");
+            if (m.getRow(0).getDim() != dim || m.getCol(0).getDim() != dim)
+                throw new System.ArgumentException("Matrix m must be of size dim*dim.");
             
-            for (int i = 0; i<3; i++)
+            for (int i = 0; i<dim; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < dim; j++)
                 {
                     if (m[i, j] > 0)
                     {
