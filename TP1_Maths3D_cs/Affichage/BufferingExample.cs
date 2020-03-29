@@ -181,7 +181,7 @@ namespace Moteur3D
             grafx = context.Allocate(this.CreateGraphics(),
                 new Rectangle(0, 0, this.Width, this.Height));
             z_buffer = new double[Width, Height];
-
+            bm = new Bitmap(Width, Height, PixelFormat.Format48bppRgb);
             // Cause the background to be cleared and redraw.
             count = 6;
             DrawToBuffer(grafx.Graphics);
@@ -249,6 +249,11 @@ namespace Moteur3D
             }
         }
 
+        private bool IsInWindow(int x, int y)
+        {
+            return x >= 0 && y >= 0 && x < Width && y < Height;
+        }
+
         private void DrawTriangleFill(Triangle untransformedTriangle, Matrix model)
         {
             Color color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
@@ -291,18 +296,21 @@ namespace Moteur3D
             for (int i = iMin; i < iMax; i++)
                 for (int j = jMin; j < jMax; j++)
                 {
-                    //Console.WriteLine("i = " + i + " , j = " + j);
-                    VectCartesien ptFenetre = new VectCartesien(i, j);
-                    VectCartesien ptBarycentrique = triangleEcran3D.ToBarycentrique2D(ptFenetre);
-                    double z = triangleEcran3D.getZFromBarycentrique(ptBarycentrique);
-                    //Console.WriteLine("ptBarycentrique = " + ptBarycentrique);
-                    //Console.WriteLine("IS IN = " + triangle.ptBarycentriqueIsIn(ptBarycentrique));
-                    if (triangleEcran3D.ptBarycentriqueIsIn(ptBarycentrique))
+                    if (IsInWindow(i, j))
                     {
-                        //bm.SetPixel(i, j, color);
-                        DrawPixel(i, j, color, z);
+                        //Console.WriteLine("i = " + i + " , j = " + j);
+                        VectCartesien ptFenetre = new VectCartesien(i, j);
+                        VectCartesien ptBarycentrique = triangleEcran3D.ToBarycentrique2D(ptFenetre);
+                        double z = triangleEcran3D.getZFromBarycentrique(ptBarycentrique);
+                        //Console.WriteLine("ptBarycentrique = " + ptBarycentrique);
+                        //Console.WriteLine("IS IN = " + triangle.ptBarycentriqueIsIn(ptBarycentrique));
+                        if (triangleEcran3D.ptBarycentriqueIsIn(ptBarycentrique))
+                        {
+                            //bm.SetPixel(i, j, color);
+                            DrawPixel(i, j, color, z);
+                        }
+                        //else bm.SetPixel(i, j, Color.Orange);
                     }
-                    //else bm.SetPixel(i, j, Color.Orange);
                 }
         }
 
@@ -325,8 +333,8 @@ namespace Moteur3D
 
         private void DrawToBuffer(Graphics g)
         {
-          /*  // Clear the graphics buffer every update.
-            if (++count > 1)
+            // Clear the graphics buffer every update.
+            /*if (++count > 1)
             {
                 count = 0;
                 grafx.Graphics.FillRectangle(Brushes.Black, 0, 0, this.Width, this.Height);
