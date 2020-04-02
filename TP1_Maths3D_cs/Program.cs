@@ -14,7 +14,7 @@ namespace Moteur3D
             Console.WriteLine("Start main.");
 
             // TP 1
-            //TP1.exec();
+            //TD1.exec();
 
             // TP 2 
             //TP2.exec();

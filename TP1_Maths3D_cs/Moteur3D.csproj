@@ -76,7 +76,7 @@
     <Compile Include="TP2\Quaternion.cs" />
     <Compile Include="TP3\Polygone.cs" />
     <Compile Include="TP3\Rayons\RayonDirect.cs" />
-    <Compile Include="Main_TPs\TP1.cs" />
+    <Compile Include="Main_TPs\TD1.cs" />
     <Compile Include="Main_TPs\TP2.cs" />
     <Compile Include="TP1\Matrix.cs" />
     <Compile Include="Main_TPs\TP3.cs" />
