@@ -22,9 +22,13 @@ namespace Moteur3D
         public enum RenderingMode { Line, Fill };
         public RenderingMode renderingMode = RenderingMode.Line;
         private double[,] z_buffer;
+
         VectCartesien translationCube;
-        VectCartesien rotationCube;
-        
+        Quaternion rotationCube;
+
+        VectCartesien translationCubeUni;
+        Quaternion rotationCubeUni;
+
         double rotation_x;
         double rotation_y;
 
@@ -43,6 +47,7 @@ namespace Moteur3D
 
         Polygone cube;
         Polygone cubeColors;
+        Polygone cubeUniColors;
 
         VectCartesien[] cube_vertices = {
 	        new VectCartesien(-0.5,-0.5, 0.5),
@@ -71,7 +76,7 @@ namespace Moteur3D
             this.Width = 512;
             this.Height = 288;
             // Configure the Form for this example.
-            this.Text = "User double buffering";
+            this.Text = "Visualisation algorithmes géométriques - Maxime Grosbois et Pauline Kowalzeyk";
             this.MouseDown += new MouseEventHandler(this.MouseDownHandler);
             this.MouseUp += new MouseEventHandler(this.MouseUpHandler);
             this.MouseMove += new MouseEventHandler(this.MouseMoveHandler);
@@ -92,8 +97,12 @@ namespace Moteur3D
             rotation_x = 0;
             rotation_y = 0;
             translationCube = new VectCartesien(0, 0, 0);
+            translationCubeUni = new VectCartesien(0, 0, -1.5);
+            rotationCube = new Quaternion();
+            rotationCubeUni = new Quaternion();
             cube = InitCube();
             cubeColors = initCubeColors();
+            cubeUniColors = initCubeUniColors();
             // Retrieves the BufferedGraphicsContext for the 
             // current application domain.
             context = BufferedGraphicsManager.Current;
@@ -246,7 +255,6 @@ namespace Moteur3D
             triangles[10] = new Triangle(cube_vertices[0], cube_vertices[4], cube_vertices[3]);
             triangles[11] = new Triangle(cube_vertices[4], cube_vertices[3], cube_vertices[7]);
 
-            //Console.WriteLine("Triangles = " + triangles);
             Polygone cube = new Polygone(triangles);
             return cube;
         }
@@ -273,10 +281,36 @@ namespace Moteur3D
             triangles[10] = new Triangle(cube_colors[0], cube_colors[4], cube_colors[3]);
             triangles[11] = new Triangle(cube_colors[4], cube_colors[3], cube_colors[7]);
 
-            //Console.WriteLine("Triangles = " + triangles);
             Polygone cube = new Polygone(triangles);
             return cube;
         }
+
+        private Polygone initCubeUniColors()
+        {
+            Triangle[] triangles = new Triangle[12];
+            // Face avant
+            triangles[0] = new Triangle(cube_colors[0], cube_colors[0], cube_colors[0]);
+            triangles[1] = new Triangle(cube_colors[0], cube_colors[0], cube_colors[0]);
+            // Face gauche
+            triangles[2] = new Triangle(cube_colors[1], cube_colors[1], cube_colors[1]);
+            triangles[3] = new Triangle(cube_colors[1], cube_colors[1], cube_colors[1]);
+            // Face doite
+            triangles[4] = new Triangle(cube_colors[2], cube_colors[2], cube_colors[2]);
+            triangles[5] = new Triangle(cube_colors[2], cube_colors[2], cube_colors[2]);
+            // Face arrière
+            triangles[6] = new Triangle(cube_colors[3], cube_colors[3], cube_colors[3]);
+            triangles[7] = new Triangle(cube_colors[3], cube_colors[3], cube_colors[3]);
+            // Face haut
+            triangles[8] = new Triangle(cube_colors[4], cube_colors[4], cube_colors[4]);
+            triangles[9] = new Triangle(cube_colors[4], cube_colors[4], cube_colors[4]);
+            // Face bas
+            triangles[10] = new Triangle(cube_colors[5], cube_colors[5], cube_colors[5]);
+            triangles[11] = new Triangle(cube_colors[5], cube_colors[5], cube_colors[5]);
+
+            Polygone cube = new Polygone(triangles);
+            return cube;
+        }
+
         private void OnTimer(object sender, EventArgs e)
         {
             DrawToBuffer(grafx.Graphics);
@@ -302,7 +336,7 @@ namespace Moteur3D
             this.Refresh();
         }
 
-        private void DrawLine(VectCartesien pt0, VectCartesien pt1, Color color, Triangle triangle2D)
+        private void DrawLine(VectCartesien pt0, VectCartesien pt1, Color color)
         {
             double x0 = pt0[0];
             double x1 = pt1[0];
@@ -326,15 +360,6 @@ namespace Moteur3D
                 {
                     bm.SetPixel((int)x0, (int)y0, color);
                 }
-                /*VectCartesien ptFenetre = new VectCartesien(x0, y0);
-                VectCartesien ptBarycentrique = triangle2D.ToBarycentrique2D(ptFenetre);
-                if (Math.Abs(ptBarycentrique[0]) < 0.000001 || Math.Abs(ptBarycentrique[1]) < 0.000001 || Math.Abs(ptBarycentrique[2]) < 0.000001)
-                {
-                    if (IsInWindow((int)x0, (int)y0))
-                    {
-                        bm.SetPixel((int)x0, (int)y0, Color.Violet);
-                    }
-                }*/
             }
         }
 
@@ -347,28 +372,17 @@ namespace Moteur3D
             }
         }
 
-        private void DrawTriangleLine(Triangle triangle, Matrix model)
+        private void DrawTriangleLine(Triangle triangleEcran)
         {
-            VectCartesien[] vertices = triangle.getVertices();
-            VectCartesien[] ptsEcran = new VectCartesien[3];
+            VectCartesien[] ptsEcran = triangleEcran.getVertices();
 
-            for (int i = 0; i < 3; i++)
-            {
-                ptsEcran[i] = renderingTransformation.placePointSurEcran(vertices[i], model);
-                //Console.WriteLine("PtEcran = " + ptsEcran[i]);
-            }
-            Triangle triangle2D = new Triangle(
-                new VectCartesien(ptsEcran[0][0], ptsEcran[0][1]),
-                new VectCartesien(ptsEcran[1][0], ptsEcran[1][1]),
-                new VectCartesien(ptsEcran[2][0], ptsEcran[2][1])
-                );
             for (int i = 0; i < 3; i++)
             {
                 if (IsInWindow((int)ptsEcran[i][0], (int)ptsEcran[i][1]))
                 {
                     bm.SetPixel((int)ptsEcran[i][0], (int)ptsEcran[i][1], Color.Yellow);
                 }
-                DrawLine(ptsEcran[i], ptsEcran[(i + 1) % 3], Color.Green, triangle2D);
+                DrawLine(ptsEcran[i], ptsEcran[(i + 1) % 3], Color.Green);
             }
         }
 
@@ -377,36 +391,10 @@ namespace Moteur3D
             return x >= 0 && y >= 0 && x < Width && y < Height;
         }
 
-        private void DrawTriangleFill(Triangle untransformedTriangle, Matrix model, Triangle triangleColors = null)
+        private void DrawTriangleFill(Triangle triangleEcran3D, Triangle triangleColors = null)
         {
             //Color color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
             Color color = Color.BlueViolet;
-
-            VectCartesien[] vertices = untransformedTriangle.getVertices();
-            VectCartesien[] ptsEcran = new VectCartesien[3];
-            
-            for (int i = 0; i < 3; i++)
-            {
-                ptsEcran[i] = renderingTransformation.placePointSurEcran(vertices[i], model);
-                //Console.WriteLine("PtEcran = " + ptsEcran[i]);
-            }
-
-            Triangle triangleEcran3D = new Triangle(ptsEcran[0], ptsEcran[1], ptsEcran[2]);
-            //Triangle triangle2D = new Triangle(
-            //    new VectCartesien(ptsEcran[0][0], ptsEcran[0][1]),
-            //    new VectCartesien(ptsEcran[1][0], ptsEcran[1][1]),
-            //    new VectCartesien(ptsEcran[2][0], ptsEcran[2][1])
-            //    );
-            for (int i = 0; i < 3; i++)
-            {
-                //Console.WriteLine("PtEcran = " + ptsEcran[i]);
-                VectCartesien pt2D = new VectCartesien(ptsEcran[i][0], ptsEcran[i][1]);
-                //Console.WriteLine("pt2D = " + pt2D);
-                VectCartesien ptBarycentriqueTest = triangleEcran3D.ToBarycentrique2D(pt2D);
-                //Console.WriteLine("ptBaycentriqueTest = " + ptBarycentriqueTest);
-            }
-                //VectCartesien ptBarycentriqueBarycentre = triangleEcran3D.ToBarycentrique2D(triangleEcran3D.Barycentre());
-                //Console.WriteLine("Barycentre en barycentrique = " + ptBarycentriqueBarycentre+ "\n\n");
 
             AABB aabb = new AABB(triangleEcran3D.getVertices());
             VectCartesien min = aabb.getMin();
@@ -415,20 +403,15 @@ namespace Moteur3D
             int jMin = Convert.ToInt32(min[1]) + 1;
             int iMax = Convert.ToInt32(max[0]);
             int jMax = Convert.ToInt32(max[1]) + 1;
-            //Console.WriteLine("iMin = " + iMin + " , iMax = " + iMax);
-            //Console.WriteLine("jMin = " + iMin + " , jMax = " + jMax);
 
             for (int i = iMin; i < iMax; i++)
                 for (int j = jMin; j < jMax; j++)
                 {
                     if (IsInWindow(i, j))
                     {
-                        //Console.WriteLine("i = " + i + " , j = " + j);
                         VectCartesien ptFenetre = new VectCartesien(i, j);
                         VectCartesien ptBarycentrique = triangleEcran3D.ToBarycentrique2D(ptFenetre);
                         double z = triangleEcran3D.getZFromBarycentrique(ptBarycentrique);
-                        //Console.WriteLine("ptBarycentrique = " + ptBarycentrique);
-                        //Console.WriteLine("IS IN = " + triangle.ptBarycentriqueIsIn(ptBarycentrique));
                         if (triangleEcran3D.ptBarycentriqueIsIn(ptBarycentrique))
                         {
                             if (triangleColors != null)
@@ -436,29 +419,28 @@ namespace Moteur3D
                                 VectCartesien vectColor = triangleColors.FromBarycentrique(ptBarycentrique);
                                 color = vectColor.ToArgbColor();
                             }
-                            //bm.SetPixel(i, j, color);
                             DrawPixel(i, j, color, z);
                         }
-                        //else bm.SetPixel(i, j, Color.Orange);
                     }
                 }
         }
 
-        private void DrawTriangle(Triangle triangle, Matrix model, Triangle triangleColors = null)
+        private void DrawTriangle(Triangle triangle, VectCartesien translation, Quaternion rotation, Triangle triangleColors = null)
         {
+            Triangle triangleEcran3D = renderingTransformation.placeTriangleSurEcran(triangle, translation, rotation);
             if (renderingMode == RenderingMode.Line)
-                DrawTriangleLine(triangle, model);
-            else DrawTriangleFill(triangle, model, triangleColors);
+                DrawTriangleLine(triangleEcran3D);
+            else DrawTriangleFill(triangleEcran3D, triangleColors);
         }
 
-        private void DrawPolygone(Polygone polygone, Matrix model, Polygone polygoneColors = null)
+        private void DrawPolygone(Polygone polygone, VectCartesien translation, Quaternion rotation, Polygone polygoneColors = null)
         {
             Triangle[] triangles = polygone.GetTriangles();
             Triangle[] trianglesColors = polygoneColors.GetTriangles();
             int length = polygone.Length();
             for (int i = 0; i < length; i++)
             {
-                DrawTriangle(triangles[i], model, trianglesColors[i]);
+                DrawTriangle(triangles[i], translation, rotation, trianglesColors[i]);
             }
         }
 
@@ -482,38 +464,13 @@ namespace Moteur3D
             double fovX = 80 * Math.PI / 180;
             double fovY = 80 * Math.PI / 180;
 
-
-            //VectCartesien cameraPos = new VectCartesien(0, 0, 0);
-            //VectCartesien cameraCible = new VectCartesien(0, 5, -10);
-
             renderingTransformation = new RenderingTransformation(cameraPos, cameraCible, Width, Height, fovX, fovY);
 
-            //VectCartesien pointTest = cameraCible + new VectCartesien(0, 1, 2);
-            //VectCartesien pScreen = renderingTransformation.placePointSurEcran(pointTest);
-            //Console.WriteLine("buff pScreen1 = " + pScreen);
+            DrawPolygone(cube, translationCube, rotationCube, cubeColors);
 
+            DrawPolygone(cube, translationCubeUni, rotationCubeUni, cubeUniColors);
 
-            // Construction de la matrice Model : passage coordonnées locales -> Monde
-            Matrix model = Matrix.translation(translationCube);
-            Matrix rotation = Matrix.rotation_x(rotation_x) * Matrix.rotation_y(rotation_y);
-            model *= rotation.increase_dim();
-
-            //Console.WriteLine("Translation = " + Matrix.translation(translation));
-            //Console.WriteLine("Rotation_x = " + Matrix.rotation_x(rotation_x));
-            //Console.WriteLine("Rotation_y = " + Matrix.rotation_y(rotation_x));
-            //Console.WriteLine("Rotation = " + rotation);
-            //Console.WriteLine("Rotation icreased = " + rotation.increase_dim());
-            //Console.WriteLine("Model = " + model);
-
-            // DRAW FIGURES
-
-            //Triangle triangle = new Triangle(new VectCartesien(-0.5, -0.5, 0.5), new VectCartesien(-0.5, 0.5, 0.5), new VectCartesien(0.5, 0.5, 0.5));
-            //DrawTriangle(triangle, model);
-
-            DrawPolygone(cube, model, cubeColors);
         }
-
-        //bm.SetPixel(Xcount, Ycount, Color.DarkViolet);
 
         protected override void OnPaint(PaintEventArgs e)
         {

@@ -135,9 +135,11 @@ namespace Moteur3D
             this.setZoom(zoomX, zoomY);
         }
 
-        public VectCartesien placePointSurEcran(VectCartesien p, Matrix model)
+        public VectCartesien placePointSurEcran(VectCartesien p, VectCartesien translation, Quaternion rotation)
         {
+            Matrix model = Matrix.translation(translation);
             //Console.WriteLine("p : " + p);
+
             VectCartesien p4 = p.increase_dim();
             p4[3] = 1;
 
@@ -148,6 +150,20 @@ namespace Moteur3D
             VectCartesien pNormalized = clipToNormalized(pClip);
             VectCartesien pWindow = normalizedToWindow(pNormalized);
             return pWindow;
+        }
+
+        public Triangle placeTriangleSurEcran(Triangle untransformedTriangle, VectCartesien translation, Quaternion rotation)
+        {
+            VectCartesien[] vertices = untransformedTriangle.getVertices();
+            VectCartesien[] ptsEcran = new VectCartesien[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                ptsEcran[i] = this.placePointSurEcran(vertices[i], translation, rotation);
+            }
+
+            Triangle triangleEcran3D = new Triangle(ptsEcran[0], ptsEcran[1], ptsEcran[2]);
+            return triangleEcran3D;
         }
     }
 }
