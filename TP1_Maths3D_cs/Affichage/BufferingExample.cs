@@ -22,9 +22,24 @@ namespace Moteur3D
         public enum RenderingMode { Line, Fill };
         public RenderingMode renderingMode = RenderingMode.Line;
         private double[,] z_buffer;
-        VectCartesien translation;
+        VectCartesien translationCube;
+        VectCartesien rotationCube;
+        
         double rotation_x;
         double rotation_y;
+
+        //VectCartesien cameraPos = new VectCartesien(6, -4, 5);
+        VectCartesien cameraPos = new VectCartesien(4, 3, 3);
+        //VectCartesien cameraCible = new VectCartesien(3, 1, -8);
+        VectCartesien cameraCible = new VectCartesien(0, 0, 0);
+
+        bool changeTranslation = false;
+        bool changeRotation = false;
+        int mouseX;
+        int mouseY;
+
+        enum TransformObject { Camera, Cube }
+        TransformObject transformObject = TransformObject.Camera;
 
         Polygone cube;
 
@@ -47,6 +62,8 @@ namespace Moteur3D
             // Configure the Form for this example.
             this.Text = "User double buffering";
             this.MouseDown += new MouseEventHandler(this.MouseDownHandler);
+            this.MouseUp += new MouseEventHandler(this.MouseUpHandler);
+            this.MouseMove += new MouseEventHandler(this.MouseMoveHandler);
             this.Resize += new EventHandler(this.OnResize);
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             this.KeyPreview = true;
@@ -63,7 +80,7 @@ namespace Moteur3D
 
             rotation_x = 0;
             rotation_y = 0;
-            translation = new VectCartesien(0, 0, 0);
+            translationCube = new VectCartesien(0, 0, 0);
             cube = InitCube();
             // Retrieves the BufferedGraphicsContext for the 
             // current application domain.
@@ -92,13 +109,70 @@ namespace Moteur3D
         {
             if (e.Button == MouseButtons.Right)
             {
-                Console.WriteLine("Rotation");
+                Console.WriteLine("Start Rotation");
+                changeRotation = true;
+                mouseX = e.X;
+                mouseY = e.Y;
             }
             else if (e.Button == MouseButtons.Left)
             {
-                translation += 1;
-                Console.WriteLine("Translation" + translation);
+                Console.WriteLine("Start Translation");
+                changeTranslation = true;
+                mouseX = e.X;
+                mouseY = e.Y;
             }
+            
+        }
+
+        private void MouseUpHandler(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                Console.WriteLine("Fin Rotation");
+                changeRotation = false;
+            }
+            else if (e.Button == MouseButtons.Left)
+            {
+                Console.WriteLine("Fin Translation");
+                changeTranslation = false;
+            }
+
+        }
+
+        private void MouseMoveHandler(object sender, MouseEventArgs e)
+        {
+            int newMouseX = e.X;
+            int newMouseY = e.Y;
+            double diffX = newMouseX - mouseX;
+            double diffY = newMouseY - mouseY;
+            double dX = (double)diffX / (double)Width;
+            double dY = (double)diffY / (double)Height;
+            mouseX = newMouseX;
+            mouseY = newMouseY;
+
+            if (changeRotation)
+            {
+                Console.WriteLine("rotation ");
+            }
+            if (changeTranslation)
+            {
+                Console.WriteLine("translation");
+
+                VectCartesien translation = new VectCartesien(dX * 5, dY * 5, 0);
+                Console.WriteLine(" = " + translation);
+
+                if (transformObject == TransformObject.Camera)
+                {
+                    cameraPos += translation;
+                }
+                if (transformObject == TransformObject.Cube)
+                {
+                    translationCube += translation;
+                }
+                
+            }
+            
+
         }
 
         private void MouseDownHandlerOriginal(object sender, MouseEventArgs e)
@@ -208,13 +282,19 @@ namespace Moteur3D
             {
                 x0 += sx;
                 y0 += sy;
-                bm.SetPixel((int)x0, (int)y0, color);
-                VectCartesien ptFenetre = new VectCartesien(x0, y0);
+                if (IsInWindow((int)x0, (int)y0))
+                {
+                    bm.SetPixel((int)x0, (int)y0, color);
+                }
+                /*VectCartesien ptFenetre = new VectCartesien(x0, y0);
                 VectCartesien ptBarycentrique = triangle2D.ToBarycentrique2D(ptFenetre);
                 if (Math.Abs(ptBarycentrique[0]) < 0.000001 || Math.Abs(ptBarycentrique[1]) < 0.000001 || Math.Abs(ptBarycentrique[2]) < 0.000001)
                 {
-                    bm.SetPixel((int)x0, (int)y0, Color.Violet);
-                }
+                    if (IsInWindow((int)x0, (int)y0))
+                    {
+                        bm.SetPixel((int)x0, (int)y0, Color.Violet);
+                    }
+                }*/
             }
         }
 
@@ -244,7 +324,10 @@ namespace Moteur3D
                 );
             for (int i = 0; i < 3; i++)
             {
-                bm.SetPixel((int)ptsEcran[i][0], (int)ptsEcran[i][1], Color.Yellow);
+                if (IsInWindow((int)ptsEcran[i][0], (int)ptsEcran[i][1]))
+                {
+                    bm.SetPixel((int)ptsEcran[i][0], (int)ptsEcran[i][1], Color.Yellow);
+                }
                 DrawLine(ptsEcran[i], ptsEcran[(i + 1) % 3], Color.Green, triangle2D);
             }
         }
@@ -350,8 +433,7 @@ namespace Moteur3D
 
             double fovX = 80 * Math.PI / 180;
             double fovY = 80 * Math.PI / 180;
-            VectCartesien cameraPos = new VectCartesien(6, -4, 5);
-            VectCartesien cameraCible = new VectCartesien(3, 1, -8);
+
 
             //VectCartesien cameraPos = new VectCartesien(0, 0, 0);
             //VectCartesien cameraCible = new VectCartesien(0, 5, -10);
@@ -364,7 +446,7 @@ namespace Moteur3D
 
 
             // Construction de la matrice Model : passage coordonnées locales -> Monde
-            Matrix model = Matrix.translation(translation);
+            Matrix model = Matrix.translation(translationCube);
             Matrix rotation = Matrix.rotation_x(rotation_x) * Matrix.rotation_y(rotation_y);
             model *= rotation.increase_dim();
 
@@ -399,6 +481,14 @@ namespace Moteur3D
             Console.WriteLine("e pressed : " + e.KeyChar);
             switch(e.KeyChar)
             {
+                case '1':
+                    transformObject = TransformObject.Cube;
+                    Console.WriteLine("Transform object : " + transformObject);
+                    break;
+                case '0':
+                    transformObject = TransformObject.Camera;
+                    Console.WriteLine("Transform object : " + transformObject);
+                    break;
                 case 'f':
                     {
                         if (renderingMode == RenderingMode.Line)
