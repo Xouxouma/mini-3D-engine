@@ -465,12 +465,13 @@ namespace Moteur3D
             double fovY = 80 * Math.PI / 180;
 
             renderingTransformation = new RenderingTransformation(cameraPos, cameraCible, Width, Height, fovX, fovY);
-
             DrawPolygone(cube, translationCube, rotationCube, cubeColors);
-
             DrawPolygone(cube, translationCubeUni, rotationCubeUni, cubeUniColors);
 
-            rotationCubeUni += Quaternion.FromEuler(0,30 * Math.PI / 180, 0);
+            rotation_x += 15;
+            VectCartesien unitVect = new VectCartesien(1, 0, 0);
+            double rad = (rotation_x * (Math.PI / 180)) / 2;
+            rotationCubeUni = new Quaternion(Math.Cos(rad), unitVect[0] * Math.Sin(rad), unitVect[1] * Math.Sin(rad), unitVect[2] * Math.Sin(rad));
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -523,13 +524,6 @@ namespace Moteur3D
 
         }
 
-        private void textBox1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                MessageBox.Show("Enter key pressed");
-            }
-        }
 
         /*[STAThread]
         public static void Main(string[] args)

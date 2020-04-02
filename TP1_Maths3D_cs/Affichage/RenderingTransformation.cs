@@ -138,19 +138,20 @@ namespace Moteur3D
         public VectCartesien placePointSurEcran(VectCartesien p, VectCartesien translation, Quaternion rotation)
         {
             Matrix model = Matrix.translation(translation);
-            model = Matrix.I(4);
             //Console.WriteLine("p : " + p);
 
             Quaternion q = new Quaternion(0, p);
-
-            q = rotation * q * rotation.conjugue();
-
+            //Console.WriteLine("\n Original q = " + q);
+            q = rotation * q * rotation.inverse();
+            //Console.WriteLine("q = " + q);
+            //Console.WriteLine("rot = " + rotation);
+            //Console.WriteLine("rot inverse = " + rotation.inverse());
             //Quaternion.SLERP(q, rotation, 2);
 
             //VectCartesien p4 = p.increase_dim();
             //p4[3] = 1;
             VectCartesien p4 = new VectCartesien(q.getX(), q.getY(), q.getZ(), 1);
-
+            //Console.WriteLine("p4 = " + p4);
             Matrix MVP = model * worldToCamera * perspective_projection();
 
             VectCartesien pClip = p4 * MVP;
@@ -164,14 +165,15 @@ namespace Moteur3D
         {
             VectCartesien[] vertices = untransformedTriangle.getVertices();
             VectCartesien[] ptsEcran = new VectCartesien[3];
-
             for (int i = 0; i < 3; i++)
             {
+                //vertices[i] = rotateTriangle(untransformedTriangle, 30 * Math.PI / 180, 'x');
                 ptsEcran[i] = this.placePointSurEcran(vertices[i], translation, rotation);
             }
 
             Triangle triangleEcran3D = new Triangle(ptsEcran[0], ptsEcran[1], ptsEcran[2]);
             return triangleEcran3D;
         }
+
     }
 }
