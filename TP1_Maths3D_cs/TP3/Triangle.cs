@@ -14,8 +14,8 @@ namespace Moteur3D
         public Triangle(VectCartesien v1, VectCartesien v2, VectCartesien v3)
         {
             int size = v1.getDim();
-            if ((size != 3 && size != 2) || v2.getDim() != size || v3.getDim() != size)
-                throw new System.ArgumentException("VectCartesien v1, v2, v3 must be of dim 2 or 3, and all the same dim");
+            if (v2.getDim() != size || v3.getDim() != size)
+                throw new System.ArgumentException("VectCartesien v1, v2, v3 must be  all the same dim");
 
             this.dim = size;
             this.v = new VectCartesien[] { v1, v2, v3 };

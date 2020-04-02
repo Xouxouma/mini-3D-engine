@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -234,6 +235,10 @@ namespace Moteur3D
             double phi = Math.Atan2(this[0], this[2]);
             return new VectPolaire(r, theta, phi);
         }
-
+    
+        public Color ToArgbColor()
+        {
+            return Color.FromArgb((int) (elems[0]*255), (int)(elems[1] * 255), (int)(elems[2] * 255), (int)(elems[3] * 255));
+        }
     }
 }
