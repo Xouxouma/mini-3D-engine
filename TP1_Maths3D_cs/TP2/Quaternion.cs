@@ -22,6 +22,14 @@ namespace Moteur3D
             this.z = z;
         }
 
+        public Quaternion(double w, VectCartesien v)
+        {
+            this.w = w;
+            this.x = v[0];
+            this.y = v[1];
+            this.z = v[2];
+        }
+
         // Constructeur identité
         public Quaternion() : this(1.0, 0.0, 0.0, 0.0) { }
 
@@ -121,6 +129,17 @@ namespace Moteur3D
             double y = q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z;
             double z = q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x;
             return new Quaternion(w, x, y, z);
+        }
+
+        public static Quaternion FromEuler(AngleEuler euler)
+        {
+            return euler.toQuaterion();
+        }
+
+        public static Quaternion FromEuler(double x, double y, double z)
+        {
+            AngleEuler euler = new AngleEuler(x, y, z);
+            return euler.toQuaterion();
         }
 
         public static Quaternion operator -(Quaternion q1, Quaternion q2)

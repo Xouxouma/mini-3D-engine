@@ -470,6 +470,7 @@ namespace Moteur3D
 
             DrawPolygone(cube, translationCubeUni, rotationCubeUni, cubeUniColors);
 
+            rotationCubeUni += Quaternion.FromEuler(0,30 * Math.PI / 180, 0);
         }
 
         protected override void OnPaint(PaintEventArgs e)

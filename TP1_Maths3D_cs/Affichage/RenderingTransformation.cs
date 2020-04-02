@@ -138,10 +138,18 @@ namespace Moteur3D
         public VectCartesien placePointSurEcran(VectCartesien p, VectCartesien translation, Quaternion rotation)
         {
             Matrix model = Matrix.translation(translation);
+            model = Matrix.I(4);
             //Console.WriteLine("p : " + p);
 
-            VectCartesien p4 = p.increase_dim();
-            p4[3] = 1;
+            Quaternion q = new Quaternion(0, p);
+
+            q = rotation * q * rotation.conjugue();
+
+            //Quaternion.SLERP(q, rotation, 2);
+
+            //VectCartesien p4 = p.increase_dim();
+            //p4[3] = 1;
+            VectCartesien p4 = new VectCartesien(q.getX(), q.getY(), q.getZ(), 1);
 
             Matrix MVP = model * worldToCamera * perspective_projection();
 
