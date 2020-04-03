@@ -138,7 +138,7 @@ namespace Moteur3D
 
         public static Quaternion FromEuler(double x, double y, double z)
         {
-            AngleEuler euler = new AngleEuler(x, y, z);
+            AngleEuler euler = new AngleEuler(y, x, z);
             return euler.toQuaterion();
         }
 

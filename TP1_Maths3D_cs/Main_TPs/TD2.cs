@@ -78,7 +78,12 @@ namespace Moteur3D
             Console.WriteLine(" (e) " + vs5);
             Console.WriteLine(" (f) " + vs6);
 
-            Quaternion q1 = new Quaternion();
+            Console.WriteLine("5.");
+            Quaternion q1 = Quaternion.FromEuler(Utils.ConvertDegreesToRadians(30), 0, 0);
+            Console.WriteLine("" + q1);
+            Console.WriteLine(" (a) " + q1.magnitude());
+            Console.WriteLine(" (b) " + q1.conjugue());
+            Console.WriteLine(" (c) " + q1.toEuler());
         }
     }
 }

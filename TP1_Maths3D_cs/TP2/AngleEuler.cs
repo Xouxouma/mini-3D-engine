@@ -42,8 +42,8 @@ namespace Moteur3D
         public Quaternion toQuaterion()
         {
             double w = Math.Cos(heading / 2) * Math.Cos(pitch / 2) * Math.Cos(bank / 2) + Math.Sin(heading / 2) * Math.Sin(pitch / 2) * Math.Sin(bank / 2);
-            double x = Math.Sin(heading / 2) * Math.Cos(pitch / 2) * Math.Cos(bank / 2) - Math.Cos(heading / 2) * Math.Sin(pitch / 2) * Math.Sin(bank / 2);
-            double y = Math.Cos(heading / 2) * Math.Sin(pitch / 2) * Math.Cos(bank / 2) + Math.Sin(heading / 2) * Math.Cos(pitch / 2) * Math.Sin(bank / 2);
+            double x = Math.Cos(heading / 2) * Math.Sin(pitch / 2) * Math.Cos(bank / 2) + Math.Sin(heading / 2) * Math.Cos(pitch / 2) * Math.Sin(bank / 2);
+            double y = Math.Sin(heading / 2) * Math.Cos(pitch / 2) * Math.Cos(bank / 2) - Math.Cos(heading / 2) * Math.Sin(pitch / 2) * Math.Sin(bank / 2);
             double z = Math.Cos(heading / 2) * Math.Cos(pitch / 2) * Math.Sin(bank / 2) - Math.Sin(heading / 2) * Math.Sin(pitch / 2) * Math.Cos(bank / 2);
             return new Quaternion(w, x, y, z);
         }
