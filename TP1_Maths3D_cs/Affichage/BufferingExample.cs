@@ -193,7 +193,7 @@ namespace Moteur3D
                         rotationCamera_y = dX * 5;
                         rotationCamera_x = dY * 5;
 
-                        Quaternion rotationCamera = Quaternion.FromEuler(rotationCamera_x, rotationCamera_y, 0);
+                        Quaternion rotationCamera = Quaternion.FromEuler(0, rotationCamera_y, 0);
                         Quaternion cameraQuat = new Quaternion(0, cameraPos);
 
                         cameraQuat = rotationCamera * cameraQuat * rotationCamera.inverse();
