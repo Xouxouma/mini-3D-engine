@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Moteur3D
 {
-    class TP3
+    class TD3
     {
         public static void exec()
         {
-            Console.WriteLine(" TP 3");
+            Console.WriteLine(" TD 3");
 
             VectCartesien v = new VectCartesien(2,3);
             

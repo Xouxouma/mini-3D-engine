@@ -460,7 +460,6 @@ namespace Moteur3D
 
         private void DrawToBuffer(Graphics g)
         {
-            Console.WriteLine("New image");
             // Clear the graphics buffer every update.
             /*if (++count > 1)
             {

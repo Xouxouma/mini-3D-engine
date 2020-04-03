@@ -227,15 +227,25 @@ namespace Moteur3D
         // Conversion vartésien -> polaire
         public VectPolaire toPolaire()
         {
+            if (this.dim != 2)
+                throw new System.ArgumentException("Vector have to be of dim 2");
+
+            double r = Math.Sqrt(this[0] * this[0] + this[1] * this[1]);
+            double theta = Math.Atan(this[1] / this[0]);
+            return new VectPolaire(r, theta);
+        }
+
+        public VectSpherique toSpherique()
+        {
             if (this.dim != 3)
                 throw new System.ArgumentException("Vector have to be of dim 3");
 
             double r = Math.Sqrt(this[0] * this[0] + this[1] * this[1] + this[2] * this[2]);
-            double theta = Math.Asin(-this[1] / r);
-            double phi = Math.Atan2(this[0], this[2]);
-            return new VectPolaire(r, theta, phi);
+            double p = Math.Asin(-this[1] / r);
+            double h = Math.Atan2(this[0], this[2]);
+            return new VectSpherique(r, p, h);
         }
-    
+
         public Color ToArgbColor()
         {
             return Color.FromArgb((int) (elems[0]*255), (int)(elems[1] * 255), (int)(elems[2] * 255), (int)(elems[3] * 255));

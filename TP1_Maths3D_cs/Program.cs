@@ -13,14 +13,14 @@ namespace Moteur3D
         {
             Console.WriteLine("Start main.");
 
-            // TP 1
+            // TD 1
             //TD1.exec();
 
-            // TP 2 
-            //TP2.exec();
+            // TD 2 
+            //TD2.exec();
 
             //TP3
-            //TP3.exec();
+            //TD3.exec();
 
             // Affichage
             AffichageMain.exec();

@@ -61,6 +61,7 @@
     </Compile>
     <Compile Include="Main_TPs\AffichageMain.cs" />
     <Compile Include="TP2\AngleEuler.cs" />
+    <Compile Include="TP2\VectSpherique.cs" />
     <Compile Include="TP3\AABB.cs" />
     <Compile Include="TP3\Cercles\CercleDirect.cs" />
     <Compile Include="TP3\Cercles\CercleImplicite.cs" />
@@ -77,9 +78,9 @@
     <Compile Include="TP3\Polygone.cs" />
     <Compile Include="TP3\Rayons\RayonDirect.cs" />
     <Compile Include="Main_TPs\TD1.cs" />
-    <Compile Include="Main_TPs\TP2.cs" />
+    <Compile Include="Main_TPs\TD2.cs" />
     <Compile Include="TP1\Matrix.cs" />
-    <Compile Include="Main_TPs\TP3.cs" />
+    <Compile Include="Main_TPs\TD3.cs" />
     <Compile Include="TP1\VectCartesien.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="TP3\Spheres\SphereImplicite.cs" />
     <Compile Include="TP3\Spheres\SphereParam.cs" />
     <Compile Include="TP3\Triangle.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
