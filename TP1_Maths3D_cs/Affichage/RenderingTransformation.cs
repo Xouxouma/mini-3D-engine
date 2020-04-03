@@ -152,6 +152,7 @@ namespace Moteur3D
             //p4[3] = 1;
             VectCartesien p4 = new VectCartesien(q.getX(), q.getY(), q.getZ(), 1);
             //Console.WriteLine("p4 = " + p4);
+
             Matrix MVP = model * worldToCamera * perspective_projection();
 
             VectCartesien pClip = p4 * MVP;

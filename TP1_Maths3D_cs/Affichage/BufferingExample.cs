@@ -36,9 +36,12 @@ namespace Moteur3D
         double rotationCubeUni_y;
 
         //VectCartesien cameraPos = new VectCartesien(6, -4, 5);
-        VectCartesien cameraPos = new VectCartesien(4, 3, 3);
+       // VectCartesien cameraPos = new VectCartesien(4, 3, 3);
+        VectCartesien cameraPos = new VectCartesien(0, 0, -5);
         //VectCartesien cameraCible = new VectCartesien(3, 1, -8);
         VectCartesien cameraCible = new VectCartesien(0, 0, 0);
+        double rotationCamera_x = 0;
+        double rotationCamera_y = 0;
 
         bool changeTranslation = false;
         bool changeRotation = false;
@@ -103,7 +106,7 @@ namespace Moteur3D
             rotationCubeUni_x = 0;
             rotationCubeUni_y = 0;
             translationCube = new VectCartesien(0, 0, 0);
-            translationCubeUni = new VectCartesien(0, 0, -1.5);
+            translationCubeUni = new VectCartesien(0, -1.5, -1.5);
             rotationCube = new Quaternion();
             rotationCubeUni = new Quaternion();
             cube = InitCube();
@@ -179,14 +182,29 @@ namespace Moteur3D
 
             if (changeRotation)
             {
-                Console.WriteLine("rotation ");
+                Console.WriteLine("rotation : dX = " +dX + " ; dY = " + dY);
           
-                rotationCube_x += dX * 5;
-                rotationCube_y += dY * 5;
-                VectCartesien unitVect = new VectCartesien(1, 0, 0);
-                double rad = (rotationCube_x * (Math.PI / 180)) / 2;
-               //rotationCube = new Quaternion(Math.Cos(rad), unitVect[0] * Math.Sin(rad), unitVect[1] * Math.Sin(rad), unitVect[2] * Math.Sin(rad));
-                rotationCube = Quaternion.FromEuler(rotationCube_x, 0, rotationCube_y);
+                switch (transformObject)
+                {
+                    case TransformObject.Camera:
+                        rotationCamera_y = dX * 5;
+                        rotationCamera_x = dY * 5;
+
+                        Quaternion rotationCamera = Quaternion.FromEuler(rotationCamera_x, rotationCamera_y, 0);
+                        Quaternion cameraQuat = new Quaternion(0, cameraPos);
+
+                        cameraQuat = rotationCamera * cameraQuat * rotationCamera.inverse();
+                        cameraPos = cameraQuat.getVect();
+                        break;
+                    case TransformObject.Cube:
+                        rotationCube_y += dX * 5;
+                        rotationCube_x += dY * 5;
+                        VectCartesien unitVect = new VectCartesien(1, 0, 0);
+                        double rad = (rotationCube_x * (Math.PI / 180)) / 2;
+                        //rotationCube = new Quaternion(Math.Cos(rad), unitVect[0] * Math.Sin(rad), unitVect[1] * Math.Sin(rad), unitVect[2] * Math.Sin(rad));
+                        rotationCube = Quaternion.FromEuler(rotationCube_x, 0, rotationCube_y);
+                        break;
+                }
 
             }
             if (changeTranslation)
@@ -196,13 +214,18 @@ namespace Moteur3D
                 VectCartesien translation = new VectCartesien(dX * 5, dY * 5, 0);
                 Console.WriteLine(" = " + translation);
 
-                if (transformObject == TransformObject.Camera)
+                switch (transformObject)
                 {
-                    cameraPos += translation;
-                }
-                if (transformObject == TransformObject.Cube)
-                {
-                    translationCube += translation;
+                    case TransformObject.Camera:
+                        cameraPos += translation;
+                        cameraCible += translation;
+                        break;
+                    case TransformObject.Cube:
+                        translationCube += translation;
+                        break;
+                    case TransformObject.CubeUni:
+                        translationCubeUni += translationCubeUni;
+                        break;
                 }
                 
             }

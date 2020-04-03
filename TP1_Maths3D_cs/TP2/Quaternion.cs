@@ -213,5 +213,10 @@ namespace Moteur3D
         {
             return new Quaternion(m);
         }
+
+        public VectCartesien getVect()
+        {
+            return new VectCartesien(x, y, z);
+        }
     }
 }
