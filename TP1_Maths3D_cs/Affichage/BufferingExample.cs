@@ -517,7 +517,6 @@ namespace Moteur3D
             double rad = (rotationCubeUni_x * (Math.PI / 180)) / 2;
             //rotationCubeUni = new Quaternion(Math.Cos(rad), unitVect[0] * Math.Sin(rad), unitVect[1] * Math.Sin(rad), unitVect[2] * Math.Sin(rad));
             rotationCubeUni = Quaternion.FromEuler(new AngleEuler(rad,0,0));
-            agrandissement = 1;
         }
 
         int computeFps()

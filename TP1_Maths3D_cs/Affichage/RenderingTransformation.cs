@@ -138,23 +138,8 @@ namespace Moteur3D
         public VectCartesien placePointSurEcran(VectCartesien p, VectCartesien translation, Quaternion rotation, int agrandissement)
         {
             Matrix model = Matrix.translation(translation);
-            //Console.WriteLine("p : " + p);
-
-            /*if(agrandissement != 1)
-                Console.WriteLine("Avant : " + model);
-
-            model = model * Matrix.ordinal_scale(new VectCartesien(agrandissement, agrandissement, agrandissement)).increase_dim();
-
-            if (agrandissement != 1)
-                Console.WriteLine("Apres : " + model);*/
-
-            if (agrandissement != 1)
-                Console.WriteLine("Avant : " + p);
 
             p = p * Matrix.ordinal_scale(new VectCartesien(agrandissement, agrandissement, agrandissement));
-
-            if (agrandissement != 1)
-                Console.WriteLine("Apres : " + p);
 
             Quaternion q = new Quaternion(0, p);
             //Console.WriteLine("\n Original q = " + q);
