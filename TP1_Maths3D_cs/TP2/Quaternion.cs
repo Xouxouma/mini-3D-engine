@@ -153,6 +153,11 @@ namespace Moteur3D
             return q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
         }
 
+        public static Quaternion difference(Quaternion a, Quaternion b)
+        {
+            return b * a.inverse();
+        }
+
         // Logarithme
         public Quaternion ln()
         {
