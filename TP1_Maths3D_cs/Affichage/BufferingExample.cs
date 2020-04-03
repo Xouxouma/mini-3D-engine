@@ -17,7 +17,8 @@ namespace Moteur3D
         private System.Windows.Forms.Timer timer1;
         private byte count;
 
-        private Bitmap bm;
+        //private Bitmap bm;
+        private DirectBitmap bm;
         private RenderingTransformation renderingTransformation;
         public enum RenderingMode { Line, Fill };
         public RenderingMode renderingMode = RenderingMode.Line;
@@ -96,7 +97,8 @@ namespace Moteur3D
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             this.KeyPreview = true;
             this.KeyPress += new KeyPressEventHandler(Form1_KeyPress);
-            bm = new Bitmap((int)Width, (int)Height, PixelFormat.Format48bppRgb);
+            //bm = new Bitmap((int)Width, (int)Height, PixelFormat.Format48bppRgb);
+            bm = new DirectBitmap((int)Width, (int)Height);
             z_buffer = new double[Width, Height];
             // Configure a timer to draw graphics updates.
             timer1 = new System.Windows.Forms.Timer();
@@ -375,7 +377,8 @@ namespace Moteur3D
             grafx = context.Allocate(this.CreateGraphics(),
                 new Rectangle(0, 0, this.Width, this.Height));
             z_buffer = new double[Width, Height];
-            bm = new Bitmap(Width, Height, PixelFormat.Format48bppRgb);
+            //bm = new Bitmap(Width, Height, PixelFormat.Format48bppRgb);
+            bm = new DirectBitmap(Width, Height);
             // Cause the background to be cleared and redraw.
             count = 6;
             DrawToBuffer(grafx.Graphics);
@@ -539,18 +542,25 @@ namespace Moteur3D
             double sec = span.TotalSeconds;
             time = newTime;
             double fps = 1.0 / sec;
-            //return (int) fps;
-            return (int)span.TotalMilliseconds;
+            return (int) fps;
+            //return (int)span.TotalMilliseconds;
         }
+
+        //int computeMs()
+        //{
+        //    DateTime newTime = DateTime.Now;
+        //    TimeSpan span = newTime - time;
+        //    return (int)span.TotalMilliseconds;
+        //}
 
         protected override void OnPaint(PaintEventArgs e)
         {
 
             //Console.WriteLine("ONPAINT");
-            this.Text = "Rendu graphique - " + computeFps() + "FPS";
+            this.Text = "Rendu graphique - " + computeFps() + " FPS";
             DrawToBuffer(e.Graphics);
             grafx.Render(e.Graphics);
-            e.Graphics.DrawImage(bm, 0, 0, bm.Width, bm.Height);
+            e.Graphics.DrawImage(bm.Bitmap, 0, 0, bm.Width, bm.Height);
         }
 
         
