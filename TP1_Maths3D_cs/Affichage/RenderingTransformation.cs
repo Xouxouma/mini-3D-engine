@@ -135,10 +135,26 @@ namespace Moteur3D
             this.setZoom(zoomX, zoomY);
         }
 
-        public VectCartesien placePointSurEcran(VectCartesien p, VectCartesien translation, Quaternion rotation)
+        public VectCartesien placePointSurEcran(VectCartesien p, VectCartesien translation, Quaternion rotation, int agrandissement)
         {
             Matrix model = Matrix.translation(translation);
             //Console.WriteLine("p : " + p);
+
+            /*if(agrandissement != 1)
+                Console.WriteLine("Avant : " + model);
+
+            model = model * Matrix.ordinal_scale(new VectCartesien(agrandissement, agrandissement, agrandissement)).increase_dim();
+
+            if (agrandissement != 1)
+                Console.WriteLine("Apres : " + model);*/
+
+            if (agrandissement != 1)
+                Console.WriteLine("Avant : " + p);
+
+            p = p * Matrix.ordinal_scale(new VectCartesien(agrandissement, agrandissement, agrandissement));
+
+            if (agrandissement != 1)
+                Console.WriteLine("Apres : " + p);
 
             Quaternion q = new Quaternion(0, p);
             //Console.WriteLine("\n Original q = " + q);
@@ -161,14 +177,14 @@ namespace Moteur3D
             return pWindow;
         }
 
-        public Triangle placeTriangleSurEcran(Triangle untransformedTriangle, VectCartesien translation, Quaternion rotation)
+        public Triangle placeTriangleSurEcran(Triangle untransformedTriangle, VectCartesien translation, Quaternion rotation, int agrandissement)
         {
             VectCartesien[] vertices = untransformedTriangle.getVertices();
             VectCartesien[] ptsEcran = new VectCartesien[3];
             for (int i = 0; i < 3; i++)
             {
                 //vertices[i] = rotateTriangle(untransformedTriangle, 30 * Math.PI / 180, 'x');
-                ptsEcran[i] = this.placePointSurEcran(vertices[i], translation, rotation);
+                ptsEcran[i] = this.placePointSurEcran(vertices[i], translation, rotation, agrandissement);
             }
 
             Triangle triangleEcran3D = new Triangle(ptsEcran[0], ptsEcran[1], ptsEcran[2]);

@@ -194,7 +194,7 @@ namespace Moteur3D
         public static Matrix operator *(Matrix mat1, Matrix mat2)
         {
             if (mat1.nb_col != mat2.nb_row)
-                throw new System.ArgumentException("both matrix don't have the right dimension: mat1 must have exactly as much columns than mat2 has rows");
+                throw new System.ArgumentException("both matrix don't have the right dimension: mat1 must have exactly as much columns than mat2 has rows : mat1.nb_col = " + mat1.nb_col + " et mat2.nb_row = " + mat2.nb_row);
 
             Matrix res_mat = new Matrix(mat1.nb_row, mat2.nb_col);
             for (int i = 0; i < res_mat.nb_row; i++)
