@@ -29,8 +29,11 @@ namespace Moteur3D
         VectCartesien translationCubeUni;
         Quaternion rotationCubeUni;
 
-        double rotation_x;
-        double rotation_y;
+        double rotationCube_x;
+        double rotationCube_y;
+
+        double rotationCubeUni_x;
+        double rotationCubeUni_y;
 
         //VectCartesien cameraPos = new VectCartesien(6, -4, 5);
         VectCartesien cameraPos = new VectCartesien(4, 3, 3);
@@ -42,7 +45,7 @@ namespace Moteur3D
         int mouseX;
         int mouseY;
 
-        enum TransformObject { Camera, Cube }
+        enum TransformObject { Camera, Cube, CubeUni }
         TransformObject transformObject = TransformObject.Camera;
 
         Polygone cube;
@@ -70,6 +73,7 @@ namespace Moteur3D
             new VectCartesien(1.0, 0.0, 0.0, 0.0), // black
             new VectCartesien(1.0, 1.0, 1.0, 1.0) // white
         };
+        private DateTime time;
 
         public BufferingExample() : base()
         {
@@ -94,8 +98,10 @@ namespace Moteur3D
             bufferingMode = 2;
             count = 0;
 
-            rotation_x = 0;
-            rotation_y = 0;
+            rotationCube_x = 0;
+            rotationCube_y = 0;
+            rotationCubeUni_x = 0;
+            rotationCubeUni_y = 0;
             translationCube = new VectCartesien(0, 0, 0);
             translationCubeUni = new VectCartesien(0, 0, -1.5);
             rotationCube = new Quaternion();
@@ -174,6 +180,14 @@ namespace Moteur3D
             if (changeRotation)
             {
                 Console.WriteLine("rotation ");
+          
+                rotationCube_x += dX * 5;
+                rotationCube_y += dY * 5;
+                VectCartesien unitVect = new VectCartesien(1, 0, 0);
+                double rad = (rotationCube_x * (Math.PI / 180)) / 2;
+               //rotationCube = new Quaternion(Math.Cos(rad), unitVect[0] * Math.Sin(rad), unitVect[1] * Math.Sin(rad), unitVect[2] * Math.Sin(rad));
+                rotationCube = Quaternion.FromEuler(rotationCube_x, 0, rotationCube_y);
+
             }
             if (changeTranslation)
             {
@@ -446,6 +460,7 @@ namespace Moteur3D
 
         private void DrawToBuffer(Graphics g)
         {
+            Console.WriteLine("New image");
             // Clear the graphics buffer every update.
             /*if (++count > 1)
             {
@@ -468,15 +483,29 @@ namespace Moteur3D
             DrawPolygone(cube, translationCube, rotationCube, cubeColors);
             DrawPolygone(cube, translationCubeUni, rotationCubeUni, cubeUniColors);
 
-            rotation_x += 15;
+            rotationCubeUni_x += 15;
             VectCartesien unitVect = new VectCartesien(1, 0, 0);
-            double rad = (rotation_x * (Math.PI / 180)) / 2;
-            rotationCubeUni = new Quaternion(Math.Cos(rad), unitVect[0] * Math.Sin(rad), unitVect[1] * Math.Sin(rad), unitVect[2] * Math.Sin(rad));
+            double rad = (rotationCubeUni_x * (Math.PI / 180)) / 2;
+            //rotationCubeUni = new Quaternion(Math.Cos(rad), unitVect[0] * Math.Sin(rad), unitVect[1] * Math.Sin(rad), unitVect[2] * Math.Sin(rad));
+            rotationCubeUni = Quaternion.FromEuler(new AngleEuler(rad,0,0));
+        }
+
+        int computeFps()
+        {
+            DateTime newTime = DateTime.Now;
+            TimeSpan span = newTime - time;
+            double sec = span.TotalSeconds;
+            time = newTime;
+            double fps = 1.0 / sec;
+            //return (int) fps;
+            return (int)span.TotalMilliseconds;
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
+
             //Console.WriteLine("ONPAINT");
+            this.Text = "Rendu graphique - " + computeFps() + "FPS";
             DrawToBuffer(e.Graphics);
             grafx.Render(e.Graphics);
             e.Graphics.DrawImage(bm, 0, 0, bm.Width, bm.Height);
@@ -488,12 +517,16 @@ namespace Moteur3D
             Console.WriteLine("e pressed : " + e.KeyChar);
             switch(e.KeyChar)
             {
+                case '0':
+                    transformObject = TransformObject.Camera;
+                    Console.WriteLine("Transform object : " + transformObject);
+                    break;
                 case '1':
                     transformObject = TransformObject.Cube;
                     Console.WriteLine("Transform object : " + transformObject);
                     break;
-                case '0':
-                    transformObject = TransformObject.Camera;
+                case '2':
+                    transformObject = TransformObject.CubeUni;
                     Console.WriteLine("Transform object : " + transformObject);
                     break;
                 case 'f':
