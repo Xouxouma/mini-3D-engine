@@ -389,7 +389,7 @@ namespace Moteur3D
             this.Refresh();
         }
 
-        private void DrawLine(VectCartesien pt0, VectCartesien pt1, Color color)
+        private void DrawLinePt0Inside(VectCartesien pt0, VectCartesien pt1, Color color)
         {
             double x0 = pt0[0];
             double x1 = pt1[0];
@@ -406,7 +406,6 @@ namespace Moteur3D
             else sy = sy * Math.Abs(dy / dx);
             double currentDist = 0;
 
-            //while ((int) Math.Round(x0) != (int)x1 && (int) Math.Round(y0) != (int)y1)
             while (currentDist < totalDist)
             {
                 x0 += sx;
@@ -416,9 +415,17 @@ namespace Moteur3D
                 {
                     double z = pt0[2] + pt1[2] * currentDist / totalDist;
                     DrawPixel((int)x0, (int)y0, color, z);
-                    //bm.SetPixel((int)x0, (int)y0, color);
                 }
+                else break;
             }
+        }
+
+        private void DrawLine(VectCartesien pt0, VectCartesien pt1, Color color)
+        {
+            if (IsInWindow((int)pt0[0], (int)pt0[1]))
+                DrawLinePt0Inside(pt0, pt1, color);
+            else if (IsInWindow((int)pt1[0], (int)pt1[1]))
+                DrawLinePt0Inside(pt1, pt0, color);
         }
 
         private void DrawPixel(int i,int j, Color c, double z)
