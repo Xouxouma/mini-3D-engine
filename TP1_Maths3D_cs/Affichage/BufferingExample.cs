@@ -23,6 +23,9 @@ namespace Moteur3D
         private RenderingTransformation renderingTransformation;
         public enum RenderingMode { Line, Fill };
         public RenderingMode renderingMode = RenderingMode.Line;
+        //public enum ProjectionMode { Perspective, Orthogonale }
+        //public ProjectionMode projectionMode = ProjectionMode.Perspective;
+        RenderingTransformation.ProjectionMode projectionMode = RenderingTransformation.ProjectionMode.Perspective;
         private double[,] z_buffer;
 
         VectCartesien translationCube;
@@ -134,7 +137,7 @@ namespace Moteur3D
             rotationCubeUni_x = 0;
             rotationCubeUni_y = 0;
             translationCube = new VectCartesien(0, 0, 0);
-            translationCubeUni = new VectCartesien(0, 0, -3.5);
+            translationCubeUni = new VectCartesien(-2.5, 0, 0);
             rotationCube = new Quaternion();
             rotationCubeUni = new Quaternion();
             cube = InitCube();
@@ -335,7 +338,7 @@ namespace Moteur3D
 
         private Polygone initSpherePolygoniale()
         {
-            Polygone poly = initSphere().ToPolygone(12);
+            Polygone poly = initSphere().ToPolygone();
             return poly;
         }
 
@@ -681,7 +684,7 @@ namespace Moteur3D
             double fovX = 80 * Math.PI / 180;
             double fovY = 80 * Math.PI / 180;
 
-            renderingTransformation = new RenderingTransformation(cameraPos, cameraCible, Width, Height, fovX, fovY);
+            renderingTransformation = new RenderingTransformation(cameraPos, cameraCible, Width, Height, fovX, fovY, projectionMode);
             DrawPolygone(cube, translationCube, rotationCube, agrandissementCube, cubeColors, cubeLineColor);
             DrawPolygone(cube, translationCubeUni, rotationCubeUni, agrandissementCubeUni, cubeUniColors, cubeUniLineColor);
             DrawPolygone(spherePoly, translationSphere, rotationSphere, agrandissementSphere);
@@ -790,16 +793,27 @@ namespace Moteur3D
                     {
                         if (renderingMode == RenderingMode.Line)
                         {
-                            Console.WriteLine("Switch to Fill rendering mode");
                             renderingMode = RenderingMode.Fill;
                         }
                         else
                         {
-                            Console.WriteLine("Switch to Line rendering mode");
                             renderingMode = RenderingMode.Line;
                         }
-                        Console.WriteLine("Rendering mode = " + renderingMode);
+                        Console.WriteLine("Rendering mode : " + renderingMode);
                     break;
+                    }
+                case 'p':
+                    {
+                        if (projectionMode == RenderingTransformation.ProjectionMode.Perspective)
+                        {
+                            projectionMode = RenderingTransformation.ProjectionMode.Orthogonale;
+                        }
+                        else
+                        {
+                            projectionMode = RenderingTransformation.ProjectionMode.Perspective;
+                        }
+                        Console.WriteLine("Projection mode : " + projectionMode);
+                        break;
                     }
                 case '+':
                     {

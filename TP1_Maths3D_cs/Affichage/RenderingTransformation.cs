@@ -21,9 +21,11 @@ namespace Moteur3D
         double gauche;
         double droite;
 
+        public enum ProjectionMode { Perspective, Orthogonale }
+        public ProjectionMode projectionMode;
         public double imageRatio { get; private set; }
 
-        public RenderingTransformation(VectCartesien posCamera, VectCartesien cibleCamera, double winResX, double winResY, double fovX, double fovY)
+        public RenderingTransformation(VectCartesien posCamera, VectCartesien cibleCamera, double winResX, double winResY, double fovX, double fovY, ProjectionMode projectionMode)
         {
             this.winRes = new VectCartesien(winResX, winResY);
             placeCamera(posCamera, cibleCamera);
@@ -31,6 +33,7 @@ namespace Moteur3D
             imageRatio = winResX / winResY;
             scale(fovY);
             cameraFovY = fovY;
+            this.projectionMode = projectionMode;
         }
 
         public void placeCamera(VectCartesien from, VectCartesien to)
@@ -61,6 +64,36 @@ namespace Moteur3D
                 new VectCartesien(0, 1 / tanFovY, 0, 0),
                 new VectCartesien(0, 0, (loin + proche) / (loin - proche), 1),
                 new VectCartesien(0, 0, -2 * loin * proche / (loin - proche), 0)
+            );
+            return m;
+        }
+
+        public Matrix orthographic_projection()
+        {
+            double aspect = winRes[0] / winRes[1];
+            double tanFovY = Math.Tan(cameraFovY / 2);
+            Matrix m = new Matrix(
+                new VectCartesien(1 / (aspect * tanFovY), 0, 0, 0),
+                new VectCartesien(0, 1 / tanFovY, 0, 0),
+                new VectCartesien(0, 0, -2 / (loin - proche), 0),
+                new VectCartesien((loin + proche) / (loin - proche), 0, (loin + proche) / (loin - proche) , 1)
+            );
+            return m;
+        }
+
+        public Matrix orthogonal_projection()
+        {
+            double aspect = winRes[0] / winRes[1];
+            double tanFovY = Math.Tan(cameraFovY / 2);
+            gauche = -aspect;
+            droite = aspect;
+            haut = 3;
+            bas = -3;
+            Matrix m = new Matrix(
+                new VectCartesien(2 / droite - gauche, 0, 0, 0),
+                new VectCartesien(0, 2 / haut - bas, 0, 0),
+                new VectCartesien(0, 0, 2 / (loin - proche), 1),
+                new VectCartesien(- (loin + proche) / (loin - proche), - (haut + bas) / (haut - bas),  - (loin + proche) / (loin - proche), 0)
             );
             return m;
         }
@@ -154,7 +187,8 @@ namespace Moteur3D
             VectCartesien p4 = new VectCartesien(q.getX(), q.getY(), q.getZ(), 1);
             //Console.WriteLine("p4 = " + p4);
 
-            Matrix MVP = model * worldToCamera * perspective_projection();
+            Matrix projection = (projectionMode == ProjectionMode.Perspective) ? perspective_projection() : orthographic_projection();
+            Matrix MVP = model * worldToCamera * projection;
 
             VectCartesien pClip = p4 * MVP;
 
