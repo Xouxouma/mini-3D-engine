@@ -17,5 +17,15 @@ namespace Moteur3D
         {
             return (180 / Math.PI) * radians;
         }
+
+        public static double GetRandomDouble(double minimum, double maximum, Random random)
+        {
+            return random.NextDouble() * (maximum - minimum) + minimum;
+        }
+
+        public static int GetRandomInt(int minimum, int maximum, Random random)     // Return minimum <= x < maximum
+        {
+            return random.Next(minimum, maximum);
+        }
     }
 }

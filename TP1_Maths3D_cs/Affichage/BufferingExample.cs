@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -36,7 +37,7 @@ namespace Moteur3D
         SphereParam sphere;
         Polygone spherePoly;
 
-        //double agrandissement = 1;
+        double agrandissement = 1;
         double agrandissementCube = 1;
         double agrandissementCubeUni = 1;
         double agrandissementSphere = 1;
@@ -59,6 +60,16 @@ namespace Moteur3D
         bool changeRotation = false;
         int mouseX;
         int mouseY;
+
+        List<Polygone> cubes = new List<Polygone>();
+        List<Polygone> cubes_colors = new List<Polygone>();
+        List<VectCartesien> translationCubes = new List<VectCartesien>();
+        List<Quaternion> rotationCubes = new List<Quaternion>();
+        List<VectCartesien> lineColorsCubes = new List<VectCartesien>();
+        //List<double> rotationCubes_x = new List<double>();
+        //List<double> rotationCubes_y = new List<double>();
+
+        Random random = new Random();
 
         enum TransformObject { Camera, Cube, CubeUni, Sphere }
         TransformObject transformObject = TransformObject.Camera;
@@ -373,6 +384,17 @@ namespace Moteur3D
             return cube;
         }
 
+        private Polygone initCubeColorsFromColor(VectCartesien color)
+        {
+            Triangle[] triangles = new Triangle[12];
+
+            for (int i = 0; i < 12; i++)
+                triangles[i] = new Triangle(color, color, color);
+
+            Polygone cube = new Polygone(triangles);
+            return cube;
+        }
+
         private Polygone initCubeUniColors()
         {
             Triangle[] triangles = new Triangle[12];
@@ -397,6 +419,67 @@ namespace Moteur3D
 
             Polygone cube = new Polygone(triangles);
             return cube;
+        }
+
+        private VectCartesien[] createPointsWithAleaLength()
+        {
+            double l = Utils.GetRandomDouble(0.5, 1, random);
+
+            /*VectCartesien[] vertices = {
+                new VectCartesien(mouseX-l,mouseY-l, l),
+                new VectCartesien(mouseX-l, mouseY+l, l),
+                new VectCartesien(mouseX+l, mouseY+l, l),
+                new VectCartesien(mouseX+l, mouseY-l, l),
+                new VectCartesien(mouseX-l, mouseY-l,-l),
+                new VectCartesien(mouseX-l, mouseY+l,-l),
+                new VectCartesien(mouseX+l, mouseY+l,-l),
+                new VectCartesien(mouseX+l, mouseY-l,-l)
+            };*/
+            VectCartesien[] vertices = {
+                new VectCartesien(-l,-l, l),
+                new VectCartesien(-l, l, l),
+                new VectCartesien(l, l, l),
+                new VectCartesien(l, -l, l),
+                new VectCartesien(-l, -l,-l),
+                new VectCartesien(-l, l,-l),
+                new VectCartesien(l, l,-l),
+                new VectCartesien(l, -l,-l)
+            };
+
+            return vertices;
+        }
+
+        private Polygone initAleaCube()
+        {
+            Triangle[] triangles = new Triangle[12];
+
+            VectCartesien[] vertices = createPointsWithAleaLength();
+
+            // Face avant
+            triangles[0] = new Triangle(vertices[0], vertices[1], vertices[2]);
+            triangles[1] = new Triangle(vertices[0], vertices[3], vertices[2]);
+
+            // Face gauche
+            triangles[2] = new Triangle(vertices[0], vertices[1], vertices[5]);
+            triangles[3] = new Triangle(vertices[5], vertices[0], vertices[4]);
+
+            // Face doite
+            triangles[4] = new Triangle(vertices[3], vertices[2], vertices[6]);
+            triangles[5] = new Triangle(vertices[6], vertices[7], vertices[3]);
+
+            // Face arrière
+            triangles[6] = new Triangle(vertices[4], vertices[6], vertices[7]);
+            triangles[7] = new Triangle(vertices[4], vertices[5], vertices[6]);
+
+            // Face haut
+            triangles[8] = new Triangle(vertices[1], vertices[5], vertices[2]);
+            triangles[9] = new Triangle(vertices[5], vertices[2], vertices[6]);
+
+            // Face bas
+            triangles[10] = new Triangle(vertices[0], vertices[4], vertices[3]);
+            triangles[11] = new Triangle(vertices[4], vertices[3], vertices[7]);
+
+            return new Polygone(triangles);
         }
 
         private void OnTimer(object sender, EventArgs e)
@@ -603,6 +686,16 @@ namespace Moteur3D
             rotationCubeUni = Quaternion.FromEuler(new AngleEuler(rad,0,0));
 
             //DrawSphereFill(sphere, translationSphere, rotationSphere, agrandissementSphere);
+
+            for (int i = 0; i < cubes.Count; i++)
+            {
+                /*Console.WriteLine();
+                Console.WriteLine("Cube : " + cubes[i]);
+                Console.WriteLine("Translation : " + translationCubes[i]);
+                Console.WriteLine("Rotation : " + rotationCubes[i]);
+                Console.WriteLine("Color : " + lineColorsCubes[i]);*/
+                DrawPolygone(cubes[i], translationCubes[i], rotationCubes[i], agrandissement, cubes_colors[i], lineColorsCubes[i]);
+            }
         }
 
         int computeFps()
@@ -669,6 +762,30 @@ namespace Moteur3D
                         }
                         Console.WriteLine("Rendering mode = " + renderingMode);
                     break;
+                    }
+                case '+':
+                    {
+                        int randomColorIndex = Utils.GetRandomInt(0, 8, random);
+                        VectCartesien color = cube_colors[randomColorIndex];
+
+                        double alea_x = Utils.GetRandomDouble(-3, 3, random);
+                        double alea_y = Utils.GetRandomDouble(-3, 3, random);
+                        double alea_z = Utils.GetRandomDouble(-3, 3, random);
+
+                        cubes.Add(initAleaCube());
+                        cubes_colors.Add(initCubeColorsFromColor(color));
+
+                        //Console.WriteLine((double)mouseX / (double)Width + ", " + (double)mouseY / (double)Height);
+                        //translationCubes.Add(new VectCartesien((double)mouseX/(double)Width, (double)mouseY/(double)Height, 0));
+
+                        Console.WriteLine(alea_x + ", " + alea_y + ", " + alea_z);
+                        translationCubes.Add(new VectCartesien(alea_x, alea_y, alea_z));
+
+                        rotationCubes.Add(new Quaternion());
+                        lineColorsCubes.Add(color);
+
+                        Console.WriteLine("Size : " + cubes.Count);
+                        break;
                     }
                 case (char)Keys.Space:
                     Console.WriteLine("Pause");
