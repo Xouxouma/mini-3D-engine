@@ -458,10 +458,10 @@ namespace Moteur3D
             AABB aabb = new AABB(triangleEcran3D.getVertices());
             VectCartesien min = aabb.getMin();
             VectCartesien max = aabb.getMax();
-            int iMin = Convert.ToInt32(min[0]);
-            int jMin = Convert.ToInt32(min[1]) + 1;
-            int iMax = Convert.ToInt32(max[0]);
-            int jMax = Convert.ToInt32(max[1]) + 1;
+            int iMin = Math.Max(Convert.ToInt32(min[0]),0);
+            int jMin = Math.Max(Convert.ToInt32(min[1]) + 1,0);
+            int iMax = Math.Min(Convert.ToInt32(max[0]), Width);
+            int jMax = Math.Min(Convert.ToInt32(max[1]) + 1, Height);
 
             for (int i = iMin; i < iMax; i++)
                 for (int j = jMin; j < jMax; j++)
