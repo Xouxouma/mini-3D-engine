@@ -30,14 +30,22 @@ namespace Moteur3D
         VectCartesien translationCubeUni;
         Quaternion rotationCubeUni;
 
+        VectCartesien translationSphere = new VectCartesien(0,1,0);
+        Quaternion rotationSphere = new Quaternion();
+
+        SphereParam sphere;
+        Polygone spherePoly;
+
         //double agrandissement = 1;
         double agrandissementCube = 1;
         double agrandissementCubeUni = 1;
+        double agrandissementSphere = 1;
         double rotationCube_x;
         double rotationCube_y;
-
+        
         double rotationCubeUni_x;
         double rotationCubeUni_y;
+        
 
         //VectCartesien cameraPos = new VectCartesien(6, -4, 5);
         // VectCartesien cameraPos = new VectCartesien(4, 3, 3);
@@ -120,6 +128,8 @@ namespace Moteur3D
             cube = InitCube();
             cubeColors = initCubeColors();
             cubeUniColors = initCubeUniColors();
+            sphere = initSphere();
+            spherePoly = initSpherePolygoniale();
             // Retrieves the BufferedGraphicsContext for the 
             // current application domain.
             context = BufferedGraphicsManager.Current;
@@ -291,7 +301,17 @@ namespace Moteur3D
             }
         }
 
+        private SphereParam initSphere()
+        {
+            SphereParam sphere = new SphereParam(new VectCartesien(0,0,0), 0.5);
+            return sphere;
+        }
 
+        private Polygone initSpherePolygoniale()
+        {
+            Polygone poly = initSphere().ToPolygone();
+            return poly;
+        }
 
         private Polygone InitCube()
         {
@@ -438,7 +458,7 @@ namespace Moteur3D
 
         private void DrawPixel(int i,int j, Color c, double z)
         {
-            if (z <= z_buffer[i, j])
+            if (z <= z_buffer[i, j] && z > 0.1)
             {
                 bm.SetPixel(i, j, c);
                 z_buffer[i, j] = z;
@@ -452,10 +472,10 @@ namespace Moteur3D
 
             for (int i = 0; i < 3; i++)
             {
-                if (IsInWindow((int)ptsEcran[i][0], (int)ptsEcran[i][1]))
-                {
-                    bm.SetPixel((int)ptsEcran[i][0], (int)ptsEcran[i][1], color);
-                }
+                //if (IsInWindow((int)ptsEcran[i][0], (int)ptsEcran[i][1]))
+                //{
+                //    bm.SetPixel((int)ptsEcran[i][0], (int)ptsEcran[i][1], color);
+                //}
                 DrawLine(ptsEcran[i], ptsEcran[(i + 1) % 3], color);
             }
         }
@@ -463,6 +483,30 @@ namespace Moteur3D
         private bool IsInWindow(int x, int y)
         {
             return x >= 0 && y >= 0 && x < Width && y < Height;
+        }
+
+        private void DrawSphereFill(SphereParam sphere, VectCartesien translation, Quaternion rotation, double agrandissement, VectCartesien lineColor = null)
+        {
+            Color color = (lineColor == null) ? Color.Green : lineColor.ToArgbColor();
+            VectCartesien centreCercleEcran = renderingTransformation.placePointSurEcran(sphere.getCentre(), translation, rotation, agrandissement);
+            VectCartesien pointCercleEcran = renderingTransformation.placePointSurEcran(sphere.getCentre() + sphere.getRayon(), translation, rotation, agrandissement);
+            double rayonEcran = centreCercleEcran.distance(pointCercleEcran);
+            Console.WriteLine("rayon " + sphere.getRayon() + " ; rayonEcran " + rayonEcran);
+
+            int iMin = Math.Max(0, Convert.ToInt32(sphere.getCentre()[0] - sphere.getRayon()));
+            int jMin = Math.Max(0, Convert.ToInt32(sphere.getCentre()[1] - sphere.getRayon()));
+            int iMax = Math.Min(Width, Convert.ToInt32(sphere.getCentre()[0] + sphere.getRayon()));
+            int jMax = Math.Min(Height, Convert.ToInt32(sphere.getCentre()[1] + sphere.getRayon()));
+            double dist;
+            for (int i = 0; i < Width; i++)
+                for (int j = 0; j < Height; j++)
+                {
+                    dist = (new VectCartesien(i, j, centreCercleEcran[2])).distance(centreCercleEcran);
+                    if (dist <= rayonEcran && IsInWindow(i, j))
+                    {
+                        DrawPixel(i, j, color, 1);
+                    }
+                }
         }
 
         private void DrawTriangleFill(Triangle triangleEcran3D, Triangle triangleColors = null)
@@ -510,11 +554,11 @@ namespace Moteur3D
         private void DrawPolygone(Polygone polygone, VectCartesien translation, Quaternion rotation, double agrandissement, Polygone polygoneColors = null, VectCartesien lineColor = null)
         {
             Triangle[] triangles = polygone.GetTriangles();
-            Triangle[] trianglesColors = polygoneColors.GetTriangles();
+            Triangle[] trianglesColors = (polygoneColors != null ) ? polygoneColors.GetTriangles() : null;
             int length = polygone.Length();
             for (int i = 0; i < length; i++)
             {
-                DrawTriangle(triangles[i], translation, rotation, agrandissement, trianglesColors[i], lineColor);
+                DrawTriangle(triangles[i], translation, rotation, agrandissement, (trianglesColors != null) ? trianglesColors[i] : null, lineColor);
             }
         }
 
@@ -542,12 +586,15 @@ namespace Moteur3D
             renderingTransformation = new RenderingTransformation(cameraPos, cameraCible, Width, Height, fovX, fovY);
             DrawPolygone(cube, translationCube, rotationCube, agrandissementCube, cubeColors, cubeLineColor);
             DrawPolygone(cube, translationCubeUni, rotationCubeUni, agrandissementCubeUni, cubeUniColors, cubeUniLineColor);
+            DrawPolygone(spherePoly, translationSphere, rotationSphere, agrandissementSphere);
 
             rotationCubeUni_x += 15;
             VectCartesien unitVect = new VectCartesien(1, 0, 0);
             double rad = (rotationCubeUni_x * (Math.PI / 180)) / 2;
             //rotationCubeUni = new Quaternion(Math.Cos(rad), unitVect[0] * Math.Sin(rad), unitVect[1] * Math.Sin(rad), unitVect[2] * Math.Sin(rad));
             rotationCubeUni = Quaternion.FromEuler(new AngleEuler(rad,0,0));
+
+            //DrawSphereFill(sphere, translationSphere, rotationSphere, agrandissementSphere);
         }
 
         int computeFps()
