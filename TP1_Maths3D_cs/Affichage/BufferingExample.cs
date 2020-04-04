@@ -30,8 +30,9 @@ namespace Moteur3D
         VectCartesien translationCubeUni;
         Quaternion rotationCubeUni;
 
-        double agrandissement = 1;
-
+        //double agrandissement = 1;
+        double agrandissementCube = 1;
+        double agrandissementCubeUni = 1;
         double rotationCube_x;
         double rotationCube_y;
 
@@ -39,7 +40,7 @@ namespace Moteur3D
         double rotationCubeUni_y;
 
         //VectCartesien cameraPos = new VectCartesien(6, -4, 5);
-       // VectCartesien cameraPos = new VectCartesien(4, 3, 3);
+        // VectCartesien cameraPos = new VectCartesien(4, 3, 3);
         VectCartesien cameraPos = new VectCartesien(0, 0, -5);
         //VectCartesien cameraCible = new VectCartesien(3, 1, -8);
         VectCartesien cameraCible = new VectCartesien(0, 0, 0);
@@ -240,12 +241,19 @@ namespace Moteur3D
 
         private void MouseWheelHandler(object sender, MouseEventArgs e)
         {
-            //Console.WriteLine("Zoom avant" + agrandissement);
-            if (e.Delta < 0)
-                agrandissement /= (e.Delta/120) * 2;
-            else
-                agrandissement *= (e.Delta/120)*2;
-            //Console.WriteLine("Zoom apres" + agrandissement);
+            double zoom = (e.Delta >= 0) ? e.Delta / 60 : -60 / e.Delta;
+            switch (transformObject)
+            {
+                case TransformObject.Camera:
+                    cameraPos[2] += e.Delta / 120;
+                    break;
+                case TransformObject.Cube:
+                    agrandissementCube *= zoom;
+                    break;
+                case TransformObject.CubeUni:
+                    agrandissementCubeUni *= zoom;
+                    break;
+            }
         }
 
         private void MouseDownHandlerOriginal(object sender, MouseEventArgs e)
@@ -532,8 +540,8 @@ namespace Moteur3D
             double fovY = 80 * Math.PI / 180;
 
             renderingTransformation = new RenderingTransformation(cameraPos, cameraCible, Width, Height, fovX, fovY);
-            DrawPolygone(cube, translationCube, rotationCube, agrandissement, cubeColors, cubeLineColor);
-            DrawPolygone(cube, translationCubeUni, rotationCubeUni, agrandissement, cubeUniColors, cubeUniLineColor);
+            DrawPolygone(cube, translationCube, rotationCube, agrandissementCube, cubeColors, cubeLineColor);
+            DrawPolygone(cube, translationCubeUni, rotationCubeUni, agrandissementCubeUni, cubeUniColors, cubeUniLineColor);
 
             rotationCubeUni_x += 15;
             VectCartesien unitVect = new VectCartesien(1, 0, 0);
