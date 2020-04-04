@@ -135,7 +135,7 @@ namespace Moteur3D
             this.setZoom(zoomX, zoomY);
         }
 
-        public VectCartesien placePointSurEcran(VectCartesien p, VectCartesien translation, Quaternion rotation, int agrandissement)
+        public VectCartesien placePointSurEcran(VectCartesien p, VectCartesien translation, Quaternion rotation, double agrandissement)
         {
             Matrix model = Matrix.translation(translation);
 
@@ -163,7 +163,7 @@ namespace Moteur3D
             return pWindow;
         }
 
-        public Triangle placeTriangleSurEcran(Triangle untransformedTriangle, VectCartesien translation, Quaternion rotation, int agrandissement)
+        public Triangle placeTriangleSurEcran(Triangle untransformedTriangle, VectCartesien translation, Quaternion rotation, double agrandissement)
         {
             VectCartesien[] vertices = untransformedTriangle.getVertices();
             VectCartesien[] ptsEcran = new VectCartesien[3];

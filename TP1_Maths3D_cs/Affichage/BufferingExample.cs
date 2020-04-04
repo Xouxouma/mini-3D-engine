@@ -30,7 +30,7 @@ namespace Moteur3D
         VectCartesien translationCubeUni;
         Quaternion rotationCubeUni;
 
-        int agrandissement = 1;
+        double agrandissement = 1;
 
         double rotationCube_x;
         double rotationCube_y;
@@ -207,7 +207,7 @@ namespace Moteur3D
                         rotationCube_y += dX * 5;
                         rotationCube_x += dY * 5;
                         VectCartesien unitVect = new VectCartesien(1, 0, 0);
-                        double rad = (rotationCube_x * (Math.PI / 180)) / 2;
+                        //double rad = (rotationCube_x * (Math.PI / 180)) / 2;
                         //rotationCube = new Quaternion(Math.Cos(rad), unitVect[0] * Math.Sin(rad), unitVect[1] * Math.Sin(rad), unitVect[2] * Math.Sin(rad));
                         rotationCube = Quaternion.FromEuler(rotationCube_x, 0, rotationCube_y);
                         break;
@@ -240,8 +240,12 @@ namespace Moteur3D
 
         private void MouseWheelHandler(object sender, MouseEventArgs e)
         {
-            Console.WriteLine("Zoom");
-            agrandissement = (e.Delta/120)*2;
+            //Console.WriteLine("Zoom avant" + agrandissement);
+            if (e.Delta < 0)
+                agrandissement /= (e.Delta/120) * 2;
+            else
+                agrandissement *= (e.Delta/120)*2;
+            //Console.WriteLine("Zoom apres" + agrandissement);
         }
 
         private void MouseDownHandlerOriginal(object sender, MouseEventArgs e)
@@ -417,11 +421,6 @@ namespace Moteur3D
             }
         }
 
-        void computeZFromDist(double dist)
-        {
-            
-        }
-
         private void DrawPixel(int i,int j, Color c, double z)
         {
             if (z <= z_buffer[i, j])
@@ -485,7 +484,7 @@ namespace Moteur3D
                 }
         }
 
-        private void DrawTriangle(Triangle triangle, VectCartesien translation, Quaternion rotation, int agrandissement, Triangle triangleColors = null, VectCartesien lineColor = null)
+        private void DrawTriangle(Triangle triangle, VectCartesien translation, Quaternion rotation, double agrandissement, Triangle triangleColors = null, VectCartesien lineColor = null)
         {
             Triangle triangleEcran3D = renderingTransformation.placeTriangleSurEcran(triangle, translation, rotation, agrandissement);
             if (renderingMode == RenderingMode.Line)
@@ -493,7 +492,7 @@ namespace Moteur3D
             else DrawTriangleFill(triangleEcran3D, triangleColors);
         }
 
-        private void DrawPolygone(Polygone polygone, VectCartesien translation, Quaternion rotation, int agrandissement, Polygone polygoneColors = null, VectCartesien lineColor = null)
+        private void DrawPolygone(Polygone polygone, VectCartesien translation, Quaternion rotation, double agrandissement, Polygone polygoneColors = null, VectCartesien lineColor = null)
         {
             Triangle[] triangles = polygone.GetTriangles();
             Triangle[] trianglesColors = polygoneColors.GetTriangles();
@@ -506,6 +505,7 @@ namespace Moteur3D
 
         private void DrawToBuffer(Graphics g)
         {
+            //Console.WriteLine("NewDraw");
             // Clear the graphics buffer every update.
             /*if (++count > 1)
             {
