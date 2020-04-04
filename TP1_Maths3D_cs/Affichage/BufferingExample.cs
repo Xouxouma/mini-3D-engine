@@ -42,10 +42,10 @@ namespace Moteur3D
         double agrandissementSphere = 1;
         double rotationCube_x;
         double rotationCube_y;
-        
         double rotationCubeUni_x;
         double rotationCubeUni_y;
-        
+        double rotationSphere_x;
+        double rotationSphere_y;
 
         //VectCartesien cameraPos = new VectCartesien(6, -4, 5);
         // VectCartesien cameraPos = new VectCartesien(4, 3, 3);
@@ -60,7 +60,7 @@ namespace Moteur3D
         int mouseX;
         int mouseY;
 
-        enum TransformObject { Camera, Cube, CubeUni }
+        enum TransformObject { Camera, Cube, CubeUni, Sphere }
         TransformObject transformObject = TransformObject.Camera;
 
         Polygone cube;
@@ -217,10 +217,12 @@ namespace Moteur3D
                     case TransformObject.Cube:
                         rotationCube_y += dX * 5;
                         rotationCube_x += dY * 5;
-                        VectCartesien unitVect = new VectCartesien(1, 0, 0);
-                        //double rad = (rotationCube_x * (Math.PI / 180)) / 2;
-                        //rotationCube = new Quaternion(Math.Cos(rad), unitVect[0] * Math.Sin(rad), unitVect[1] * Math.Sin(rad), unitVect[2] * Math.Sin(rad));
                         rotationCube = Quaternion.FromEuler(rotationCube_x, 0, rotationCube_y);
+                        break;
+                    case TransformObject.Sphere:
+                        rotationSphere_x += dX * 5;
+                        rotationSphere_y += dY * 5;
+                        rotationSphere = Quaternion.FromEuler(rotationSphere_x, 0, rotationSphere_y);
                         break;
                 }
 
@@ -242,7 +244,10 @@ namespace Moteur3D
                         translationCube += translation;
                         break;
                     case TransformObject.CubeUni:
-                        translationCubeUni += translationCubeUni;
+                        translationCubeUni += translation;
+                        break;
+                    case TransformObject.Sphere:
+                        translationSphere += translation;
                         break;
                 }
                 
@@ -262,6 +267,9 @@ namespace Moteur3D
                     break;
                 case TransformObject.CubeUni:
                     agrandissementCubeUni *= zoom;
+                    break;
+                case TransformObject.Sphere:
+                    agrandissementSphere *= zoom;
                     break;
             }
         }
@@ -641,6 +649,10 @@ namespace Moteur3D
                     break;
                 case '2':
                     transformObject = TransformObject.CubeUni;
+                    Console.WriteLine("Transform object : " + transformObject);
+                    break;
+                case 's':
+                    transformObject = TransformObject.Sphere;
                     Console.WriteLine("Transform object : " + transformObject);
                     break;
                 case 'f':
