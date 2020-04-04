@@ -274,7 +274,7 @@ namespace Moteur3D
 
         private void MouseWheelHandler(object sender, MouseEventArgs e)
         {
-            double zoom = (e.Delta >= 0) ? e.Delta / 60 : -60 / e.Delta;
+            double zoom = (e.Delta >= 0) ? e.Delta / 60.0 : -60.0 / e.Delta;
             switch (transformObject)
             {
                 case TransformObject.Camera:
@@ -335,7 +335,7 @@ namespace Moteur3D
 
         private Polygone initSpherePolygoniale()
         {
-            Polygone poly = initSphere().ToPolygone();
+            Polygone poly = initSphere().ToPolygone(12);
             return poly;
         }
 
