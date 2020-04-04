@@ -66,13 +66,14 @@ namespace Moteur3D
         List<VectCartesien> translationCubes = new List<VectCartesien>();
         List<Quaternion> rotationCubes = new List<Quaternion>();
         List<VectCartesien> lineColorsCubes = new List<VectCartesien>();
-        //List<double> rotationCubes_x = new List<double>();
-        //List<double> rotationCubes_y = new List<double>();
+        List<double> rotationCubes_x = new List<double>();
+        List<double> rotationCubes_y = new List<double>();
 
         Random random = new Random();
 
-        enum TransformObject { Camera, Cube, CubeUni, Sphere }
+        enum TransformObject { Camera, Cube, CubeUni, Sphere, CubeList }
         TransformObject transformObject = TransformObject.Camera;
+        int indexCubeList = 0;
 
         Polygone cube;
         Polygone cubeColors;
@@ -108,7 +109,7 @@ namespace Moteur3D
             this.Width = 512;
             this.Height = 288;
             // Configure the Form for this example.
-            this.Text = "Visualisation algorithmes géométriques - Maxime Grosbois et Pauline Kowalzeyk";
+            this.Text = "Visualisation algorithmes géométriques - Maxime Grosbois et Pauline Kowalezyk";
             this.MouseDown += new MouseEventHandler(this.MouseDownHandler);
             this.MouseUp += new MouseEventHandler(this.MouseUpHandler);
             this.MouseMove += new MouseEventHandler(this.MouseMoveHandler);
@@ -211,7 +212,7 @@ namespace Moteur3D
 
             if (changeRotation)
             {
-                Console.WriteLine("rotation : dX = " +dX + " ; dY = " + dY);
+                //Console.WriteLine("rotation : dX = " +dX + " ; dY = " + dY);
           
                 switch (transformObject)
                 {
@@ -235,15 +236,18 @@ namespace Moteur3D
                         rotationSphere_y += dY * 5;
                         rotationSphere = Quaternion.FromEuler(rotationSphere_x, 0, rotationSphere_y);
                         break;
+                    case TransformObject.CubeList:
+                        rotationCubes_x[indexCubeList] += dX * 5;
+                        rotationCubes_y[indexCubeList] += dX * 5;
+                        rotationCubes[indexCubeList] = Quaternion.FromEuler(rotationCubes_x[indexCubeList], 0, rotationCubes_x[indexCubeList]);
+                        break;
                 }
 
             }
             if (changeTranslation)
             {
-                Console.WriteLine("translation");
-
                 VectCartesien translation = new VectCartesien(dX * 5, dY * 5, 0);
-                Console.WriteLine(" = " + translation);
+                //Console.WriteLine("translation : " + translation);
 
                 switch (transformObject)
                 {
@@ -259,6 +263,9 @@ namespace Moteur3D
                         break;
                     case TransformObject.Sphere:
                         translationSphere += translation;
+                        break;
+                    case TransformObject.CubeList:
+                        translationCubes[indexCubeList] += translation;
                         break;
                 }
                 
@@ -726,7 +733,38 @@ namespace Moteur3D
             e.Graphics.DrawImage(bm.Bitmap, 0, 0, bm.Width, bm.Height);
         }
 
-        
+        void AddCubeInList()
+        {
+            if (cubes.Count < 8)
+            {
+                int randomColorIndex = Utils.GetRandomInt(0, 8, random);
+                VectCartesien color = cube_colors[randomColorIndex];
+
+                double alea_x = Utils.GetRandomDouble(-3, 3, random);
+                double alea_y = Utils.GetRandomDouble(-3, 3, random);
+                double alea_z = Utils.GetRandomDouble(-3, 3, random);
+
+                cubes.Add(initAleaCube());
+                cubes_colors.Add(initCubeColorsFromColor(color));
+
+                //Console.WriteLine((double)mouseX / (double)Width + ", " + (double)mouseY / (double)Height);
+                //translationCubes.Add(new VectCartesien((double)mouseX/(double)Width, (double)mouseY/(double)Height, 0));
+
+                Console.WriteLine(alea_x + ", " + alea_y + ", " + alea_z);
+                translationCubes.Add(new VectCartesien(alea_x, alea_y, alea_z));
+
+                rotationCubes.Add(new Quaternion());
+                rotationCubes_x.Add(0);
+                rotationCubes_y.Add(0);
+
+                lineColorsCubes.Add(color);
+                Console.WriteLine("Add cube : " + (cubes.Count - 1) + ", transformable with : " + (cubes.Count - 1 + 3));
+            }
+            else
+                Console.WriteLine("Too many cubes already added.");
+
+        }
+
         void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
             Console.WriteLine("e pressed : " + e.KeyChar);
@@ -765,26 +803,7 @@ namespace Moteur3D
                     }
                 case '+':
                     {
-                        int randomColorIndex = Utils.GetRandomInt(0, 8, random);
-                        VectCartesien color = cube_colors[randomColorIndex];
-
-                        double alea_x = Utils.GetRandomDouble(-3, 3, random);
-                        double alea_y = Utils.GetRandomDouble(-3, 3, random);
-                        double alea_z = Utils.GetRandomDouble(-3, 3, random);
-
-                        cubes.Add(initAleaCube());
-                        cubes_colors.Add(initCubeColorsFromColor(color));
-
-                        //Console.WriteLine((double)mouseX / (double)Width + ", " + (double)mouseY / (double)Height);
-                        //translationCubes.Add(new VectCartesien((double)mouseX/(double)Width, (double)mouseY/(double)Height, 0));
-
-                        Console.WriteLine(alea_x + ", " + alea_y + ", " + alea_z);
-                        translationCubes.Add(new VectCartesien(alea_x, alea_y, alea_z));
-
-                        rotationCubes.Add(new Quaternion());
-                        lineColorsCubes.Add(color);
-
-                        Console.WriteLine("Size : " + cubes.Count);
+                        AddCubeInList();
                         break;
                     }
                 case (char)Keys.Space:
@@ -794,7 +813,20 @@ namespace Moteur3D
                     else timer1.Start();
                     break;
                 default:
-                    Console.WriteLine("unrecognized command");
+                    if (e.KeyChar >= 51 && e.KeyChar < 58)
+                    {
+                        if (e.KeyChar - 51 < cubes.Count)
+                        {
+                            transformObject = TransformObject.CubeList;
+                            indexCubeList = e.KeyChar - 51;
+                            Console.WriteLine("Transform object : " + transformObject + "[" + indexCubeList + "]");
+                        } else
+                        {
+                            Console.WriteLine("Index invalid, add cube with '+'.");
+                        }
+                    }
+                    else
+                        Console.WriteLine("unrecognized command");
                     break;
             }
 
