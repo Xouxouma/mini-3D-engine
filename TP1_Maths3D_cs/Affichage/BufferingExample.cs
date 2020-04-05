@@ -765,7 +765,21 @@ namespace Moteur3D
             }
             else
                 Console.WriteLine("Too many cubes already added.");
+        }
 
+        void removeCubeFromList()
+        {
+            if (cubes.Count >= 1)
+            {
+                int i = cubes.Count - 1;
+                cubes.Remove(cubes[i]);
+                cubes_colors.Remove(cubes_colors[i]);
+                translationCubes.Remove(translationCubes[i]);
+                rotationCubes.Remove(rotationCubes[i]);
+                rotationCubes_x.Remove(rotationCubes_x[i]);
+                rotationCubes_y.Remove(rotationCubes_y[i]);
+                lineColorsCubes.Remove(lineColorsCubes[i]);
+            }
         }
 
         void Form1_KeyPress(object sender, KeyPressEventArgs e)
@@ -818,6 +832,11 @@ namespace Moteur3D
                 case '+':
                     {
                         AddCubeInList();
+                        break;
+                    }
+                case '-':
+                    {
+                        removeCubeFromList();
                         break;
                     }
                 case (char)Keys.Space:
