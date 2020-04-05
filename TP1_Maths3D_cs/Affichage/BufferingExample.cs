@@ -215,7 +215,7 @@ namespace Moteur3D
             double diffX = newMouseX - mouseX;
             double diffY = newMouseY - mouseY;
             double dX = (double)diffX / (double)Width;
-            double dY = (double)diffY / (double)Height;
+            double dY =  - (double)diffY / (double)Height;
             mouseX = newMouseX;
             mouseY = newMouseY;
 
