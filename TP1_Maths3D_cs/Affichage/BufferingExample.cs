@@ -40,10 +40,11 @@ namespace Moteur3D
         SphereParam sphere;
         Polygone spherePoly;
 
-        double agrandissement = 1;
+        //double agrandissement = 1;
         double agrandissementCube = 1;
         double agrandissementCubeUni = 1;
         double agrandissementSphere = 1;
+
         double rotationCube_x;
         double rotationCube_y;
         double rotationCubeUni_x;
@@ -71,6 +72,7 @@ namespace Moteur3D
         List<VectCartesien> lineColorsCubes = new List<VectCartesien>();
         List<double> rotationCubes_x = new List<double>();
         List<double> rotationCubes_y = new List<double>();
+        List<double> agrandissementCubes = new List<double>();
 
         Random random = new Random();
 
@@ -291,6 +293,9 @@ namespace Moteur3D
                     break;
                 case TransformObject.Sphere:
                     agrandissementSphere *= zoom;
+                    break;
+                case TransformObject.CubeList:
+                    agrandissementCubes[indexCubeList] *= zoom;
                     break;
             }
         }
@@ -704,7 +709,7 @@ namespace Moteur3D
                 Console.WriteLine("Translation : " + translationCubes[i]);
                 Console.WriteLine("Rotation : " + rotationCubes[i]);
                 Console.WriteLine("Color : " + lineColorsCubes[i]);*/
-                DrawPolygone(cubes[i], translationCubes[i], rotationCubes[i], agrandissement, cubes_colors[i], lineColorsCubes[i]);
+                DrawPolygone(cubes[i], translationCubes[i], rotationCubes[i], agrandissementCubes[i], cubes_colors[i], lineColorsCubes[i]);
             }
         }
 
@@ -760,6 +765,8 @@ namespace Moteur3D
                 rotationCubes_x.Add(0);
                 rotationCubes_y.Add(0);
 
+                agrandissementCubes.Add(1);
+
                 lineColorsCubes.Add(color);
                 Console.WriteLine("Add cube : " + (cubes.Count - 1) + ", transformable with : " + (cubes.Count - 1 + 3));
             }
@@ -779,6 +786,11 @@ namespace Moteur3D
                 rotationCubes_x.Remove(rotationCubes_x[i]);
                 rotationCubes_y.Remove(rotationCubes_y[i]);
                 lineColorsCubes.Remove(lineColorsCubes[i]);
+                agrandissementCubes.Remove(agrandissementCubes[i]);
+                if (indexCubeList == i)
+                {
+                    indexCubeList = 0;
+                }
             }
         }
 
