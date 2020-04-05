@@ -34,11 +34,12 @@ namespace Moteur3D
         VectCartesien translationCubeUni;
         Quaternion rotationCubeUni;
 
-        VectCartesien translationSphere = new VectCartesien(0,1,0);
+        VectCartesien translationSphere = new VectCartesien(0,2,0);
         Quaternion rotationSphere = new Quaternion();
 
         SphereParam sphere;
         Polygone spherePoly;
+        Polygone sphereCouleurs;
 
         //double agrandissement = 1;
         double agrandissementCube = 1;
@@ -59,7 +60,7 @@ namespace Moteur3D
         VectCartesien cameraCible = new VectCartesien(0, 0, 0);
         double rotationCamera_x = 0;
         double rotationCamera_y = 0;
-
+        
         bool changeTranslation = false;
         bool changeRotation = false;
         int mouseX;
@@ -85,6 +86,7 @@ namespace Moteur3D
         Polygone cubeUniColors;
         VectCartesien cubeLineColor = new VectCartesien(1,0,1,1);
         VectCartesien cubeUniLineColor = new VectCartesien(1,1,0,0);
+        Polygone poly;
 
         VectCartesien[] cube_vertices = {
 	        new VectCartesien(-0.5,-0.5, 0.5),
@@ -150,6 +152,8 @@ namespace Moteur3D
             // Retrieves the BufferedGraphicsContext for the 
             // current application domain.
             context = BufferedGraphicsManager.Current;
+            poly = InitPoly();
+            sphereCouleurs = InitSphereCouleurs();
 
             // Sets the maximum size for the primary graphics buffer
             // of the buffered graphics context for the application
@@ -436,7 +440,86 @@ namespace Moteur3D
             return cube;
         }
 
-        private VectCartesien[] createPointsWithAleaLength()
+        double supershape(double theta, double m, double n1, double n2, double n3, double a = 1, double b = 1)
+        {
+            double t1 = Math.Abs((1.0 / a) * Math.Cos(m * theta / 4.0));
+            t1 = Math.Pow(t1, n2);
+            double t2 = Math.Abs((1.0 / b) * Math.Sin(m * theta / 4.0));
+            t2 = Math.Pow(t2, n3);
+            double t3 = t1 + t2;
+            t3 = Math.Pow(t3, -1.0 / n1);
+            double r = Math.Pow(t3, -1.0 / n1);
+            return r / 10;
+            //return 1;
+            //return Math.Cos(m * theta / 4.0) + Math.Sin(m * theta / 4.0);
+        }
+        Polygone InitPoly(double rayon = 1, int nbDecoupes = 12)
+        {
+            VectCartesien centre = new VectCartesien(0, 0, 0);
+            List<Triangle> triangles = new List<Triangle>();
+            VectCartesien[,] points = new VectCartesien[nbDecoupes, nbDecoupes];
+            double lon, lat, x, y, z;
+            double r1 = 1;
+            double r2 = 1;
+            for (int i = 0; i < nbDecoupes; i++)
+            {
+                lat = -((nbDecoupes - 1 - i) / (double)(nbDecoupes - 1)) * Math.PI + (i / ((double)(nbDecoupes - 1)) * Math.PI);
+                r2 = supershape(lat, 7, 0.2, 1.7, 1.7);
+                for (int j = 0; j < nbDecoupes; j++)
+                {
+                    lon = -((nbDecoupes - 1 - j) / (double)(nbDecoupes - 1)) * Math.PI / 2 + (j / ((double)(nbDecoupes - 1)) * Math.PI / 2);
+                    r1 = supershape(lon, 7, 0.2, 1.7, 1.7);
+                    x = rayon * r1 * Math.Sin(lat) * r2 * Math.Cos(lon) + centre[0];
+                    y = rayon * r1 * Math.Sin(lat) * r2 * Math.Sin(lon) + centre[1];
+                    z = rayon * r2 * Math.Cos(lat) + centre[2];
+                    points[i, j] = new VectCartesien(x, y, z);
+                }
+            }
+
+            for (int i = 0; i < nbDecoupes - 1; i++)
+            {
+                for (int j = 0; j < nbDecoupes - 1; j++)
+                {
+                    triangles.Add(new Triangle(points[i, j], points[(i + 1) % nbDecoupes, j], points[i, (j + 1) % nbDecoupes]));
+                    triangles.Add(new Triangle(points[(i + 1) % nbDecoupes, j], points[i, (j + 1) % nbDecoupes], points[(i + 1) % nbDecoupes, (j + 1) % nbDecoupes]));
+                }
+            }
+
+            return new Polygone(triangles.ToArray());
+        }
+
+        Polygone InitSphereCouleurs(double rayon = 1, int nbDecoupes = 12)
+        {
+            VectCartesien centre = new VectCartesien(0, 0, 0);
+            List<Triangle> triangles = new List<Triangle>();
+            VectCartesien[,] points = new VectCartesien[nbDecoupes, nbDecoupes];
+            double lon, lat, x, y, z;
+            for (int i = 0; i < nbDecoupes; i++)
+            {
+                lat = -((nbDecoupes - 1 - i) / (double)(nbDecoupes - 1)) * Math.PI + (i / ((double)(nbDecoupes - 1)) * Math.PI);
+                for (int j = 0; j < nbDecoupes; j++)
+                {
+                    lon = -((nbDecoupes - 1 - j) / (double)(nbDecoupes - 1)) * Math.PI / 2 + (j / ((double)(nbDecoupes - 1)) * Math.PI / 2);
+                    x = rayon * Math.Sin(lat) * Math.Cos(lon) + centre[0];
+                    y = rayon * Math.Sin(lat) * Math.Sin(lon) + centre[1];
+                    z = rayon * Math.Cos(lat) + centre[2];
+                    points[i, j] = new VectCartesien(1, Math.Abs(x), Math.Abs(y), Math.Abs(z));
+                }
+            }
+
+            for (int i = 0; i < nbDecoupes - 1; i++)
+            {
+                for (int j = 0; j < nbDecoupes - 1; j++)
+                {
+                    triangles.Add(new Triangle(points[i, j], points[(i + 1) % nbDecoupes, j], points[i, (j + 1) % nbDecoupes]));
+                    triangles.Add(new Triangle(points[(i + 1) % nbDecoupes, j], points[i, (j + 1) % nbDecoupes], points[(i + 1) % nbDecoupes, (j + 1) % nbDecoupes]));
+                }
+            }
+
+            return new Polygone(triangles.ToArray());
+        }
+
+    private VectCartesien[] createPointsWithAleaLength()
         {
             double l = Utils.GetRandomDouble(0.5, 1, random);
 
@@ -692,7 +775,8 @@ namespace Moteur3D
             renderingTransformation = new RenderingTransformation(cameraPos, cameraCible, Width, Height, fovX, fovY, projectionMode);
             DrawPolygone(cube, translationCube, rotationCube, agrandissementCube, cubeColors, cubeLineColor);
             DrawPolygone(cube, translationCubeUni, rotationCubeUni, agrandissementCubeUni, cubeUniColors, cubeUniLineColor);
-            DrawPolygone(spherePoly, translationSphere, rotationSphere, agrandissementSphere);
+            DrawPolygone(spherePoly, translationSphere, rotationSphere, 2, sphereCouleurs);
+            DrawPolygone(poly, new VectCartesien(2.5, 0, 0), new Quaternion(), 1, sphereCouleurs);
 
             rotationCubeUni_x += 15;
             VectCartesien unitVect = new VectCartesien(1, 0, 0);
@@ -704,11 +788,6 @@ namespace Moteur3D
 
             for (int i = 0; i < cubes.Count; i++)
             {
-                /*Console.WriteLine();
-                Console.WriteLine("Cube : " + cubes[i]);
-                Console.WriteLine("Translation : " + translationCubes[i]);
-                Console.WriteLine("Rotation : " + rotationCubes[i]);
-                Console.WriteLine("Color : " + lineColorsCubes[i]);*/
                 DrawPolygone(cubes[i], translationCubes[i], rotationCubes[i], agrandissementCubes[i], cubes_colors[i], lineColorsCubes[i]);
             }
         }

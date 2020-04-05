@@ -41,41 +41,31 @@ namespace Moteur3D
             return rayon;
         }
 
-        public Polygone ToPolygone(int nbDecoupes = 8)
+        public Polygone ToPolygone(int nbDecoupes = 12)
         {
             List<Triangle> triangles = new List<Triangle>();
             VectCartesien[,] points = new VectCartesien[nbDecoupes, nbDecoupes];
             double lon, lat, x, y, z;
             for (int i = 0; i < nbDecoupes; i++)
             {
-                lon = -((nbDecoupes - i) / (double)nbDecoupes) * Math.PI + (i / (double)nbDecoupes) * Math.PI;
+                lat = -((nbDecoupes - 1 - i) / (double)(nbDecoupes - 1)) * Math.PI + (i / ((double)(nbDecoupes - 1)) * Math.PI);
                 for (int j = 0; j < nbDecoupes; j++)
                 {
-                    lat = -((nbDecoupes - j) / (double)nbDecoupes) * Math.PI + (j / (double)nbDecoupes) * Math.PI;
-                    x = rayon * Math.Sin(lon) * Math.Cos(lat) + centre[0];
-                    y = rayon * Math.Sin(lon) * Math.Sin(lat) + centre[1];
-                    z = rayon * Math.Cos(lon) + centre[2];
-                    points[j, i] = new VectCartesien(x, y, z);
+                    lon = -((nbDecoupes - 1 - j) / (double)(nbDecoupes - 1)) * Math.PI / 2 + (j / ((double)(nbDecoupes-1)) * Math.PI / 2 );
+                    x = rayon * Math.Sin(lat) * Math.Cos(lon) + centre[0];
+                    y = rayon * Math.Sin(lat) * Math.Sin(lon) + centre[1];
+                    z = rayon * Math.Cos(lat) + centre[2];
+                    points[i, j] = new VectCartesien(x, y, z);
                 }
             }
-
-            for (int j = 0; j < nbDecoupes; j++)
+            
+            for (int i = 0; i < nbDecoupes - 1; i++)
             {
-                triangles.Add(new Triangle(points[0, j], points[1, j], points[1, (j + 1) % nbDecoupes]));
-            }
-
-            for (int i = 1; i < nbDecoupes - 1; i++)
-            {
-                for (int j = 0; j < nbDecoupes; j++)
+                for (int j = 0; j < nbDecoupes-1; j++)
                 {
-                    triangles.Add(new Triangle(points[i, j], points[i + 1, j], points[i, (j + 1) % nbDecoupes]));
-                    triangles.Add(new Triangle(points[i + 1, j], points[i, j], points[i + 1, (j + 1) % nbDecoupes]));
+                    triangles.Add(new Triangle(points[i, j], points[(i + 1) % nbDecoupes, j], points[i, (j + 1) % nbDecoupes]));
+                    triangles.Add(new Triangle(points[(i + 1) % nbDecoupes, j], points[i, (j + 1) % nbDecoupes], points[(i + 1) % nbDecoupes, (j + 1) % nbDecoupes]));
                 }
-            }
-
-            for (int j = 0; j < nbDecoupes; j++)
-            {
-                triangles.Add(new Triangle(points[nbDecoupes - 1, j], points[nbDecoupes - 2, j], points[nbDecoupes - 2, (j + 1) % nbDecoupes]));
             }
 
             return new Polygone(triangles.ToArray());
